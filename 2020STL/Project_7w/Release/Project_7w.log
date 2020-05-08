@@ -1,0 +1,9 @@
+﻿  7_1 Iterator.cpp
+C:\Users\quswl\source\repos\2020_3G_1T\2020STL\Project_7w\7_1 Iterator.cpp(38,37): error C2039: 'iterator_category': 'std::iterator_traits<String>'의 멤버가 아닙니다.
+C:\Users\quswl\source\repos\2020_3G_1T\2020STL\Project_7w\7_1 Iterator.cpp(38): message : 'std::iterator_traits<String>' 선언을 참조하십시오.
+C:\Users\quswl\source\repos\2020_3G_1T\2020STL\Project_7w\7_1 Iterator.cpp(32): message : 컴파일되는 함수 템플릿 인스턴스화 'void showCategory<String>(const T &)'에 대한 참조를 확인하세요.
+          with
+          [
+              T=String
+          ]
+C:\Users\quswl\source\repos\2020_3G_1T\2020STL\Project_7w\7_1 Iterator.cpp(38,1): error C2065: 'iterator_category': 선언되지 않은 식별자입니다.
