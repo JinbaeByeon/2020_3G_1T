@@ -1,0 +1,4 @@
+﻿  prac09.cpp
+C:\Users\quswl\source\repos\Project_OOP\Project_OOP\prac09.cpp(19,13): warning C4018: '<=': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\quswl\source\repos\Project_OOP\Project_OOP\prac09.cpp(13,7): warning C4101: 'oper' :참조되지 않은 지역 변수입니다.
+  Project_OOP.vcxproj -> C:\Users\quswl\source\repos\Project_OOP\Debug\Project_OOP.exe

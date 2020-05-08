@@ -1,0 +1,42 @@
+ehT dradnatS etalpmeT yrarbiL ()LTS si a erawtfos yrarbil rof eht ++C gnimmargorp egaugnal taht decneulfni ynam strap fo eht ++C dradnatS .yrarbiL tI sedivorp ruof stnenopmoc dellac ,smhtirogla ,sreniatnoc ,snoitcnuf dna .srotareti 
+
+ehT LTS sedivorp a tes fo nommoc sessalc rof ,++C hcus sa sreniatnoc dna evitaicossa ,syarra taht nac eb desu htiw yna ni-tliub epyt dna htiw yna denifed-resu epyt taht stroppus emos yratnemele snoitarepo (hcus sa gniypoc dna .)tnemngissa LTS smhtirogla era tnednepedni fo ,sreniatnoc hcihw yltnacifingis secuder eht ytixelpmoc fo eht .yrarbil 
+
+ehT LTS seveihca sti stluser hguorht eht esu fo .setalpmet sihT hcaorppa sedivorp emit-elipmoc msihpromylop taht si netfo erom tneiciffe naht lanoitidart emit-nur .msihpromylop nredoM ++C srelipmoc era denut ot eziminim noitcartsba seitlanep gnisira morf yvaeh esu fo eht .LTS 
+
+ehT LTS saw detaerc sa eht tsrif yrarbil fo cireneg smhtirogla dna atad serutcurts rof ,++C htiw ruof saedi ni :dnim cireneg ,gnimmargorp ssentcartsba tuohtiw ssol fo ,ycneiciffe eht noV nnamueN noitatupmoc ,ledom dna eulav scitnames.
+
+
+
+
+yrotsiH
+
+nI rebmevoN 1993 rednaxelA vonapetS detneserp a yrarbil desab no cireneg gnimmargorp ot eht OSI/ISNA eettimmoc rof ++C .noitazidradnats ehT s'eettimmoc esnopser saw ylgnimlehwrevo elbarovaf dna del ot a tseuqer morf werdnA gineoK rof a lamrof lasoporp ni emit rof eht hcraM 1994 .gniteem ehT eettimmoc dah lareves stseuqer rof segnahc dna snoisnetxe dna eht eettimmoc srebmem tem htiw vonapetS dna gneM eeL ot pleh krow tuo eht .sliated ehT stnemeriuqer rof eht tsom tnacifingis noisnetxe (evitaicossa )sreniatnoc dah ot eb nwohs ot eb tnetsisnoc yb ylluf gnitnemelpmi ,meht a ksat vonapetS detageled ot divaD .ressuM A lasoporp deviecer lanif lavorppa ta eht yluJ 1994 OSI/ISNA eettimmoc .gniteem ,yltneuqesbuS eht vonapetS dna eeL tnemucod 17 saw detaroprocni otni eht OSI/ISNA ++C tfard dradnats (1, strap fo sesualc 17 hguorht 27). 
+
+ehT stcepsorp rof ylrae daerpsediw noitanimessid fo LTS erew ylbaredisnoc devorpmi htiw s'drakcaP-ttelweH noisiced ot ekam sti noitatnemelpmi yleerf elbaliava no eht tenretnI ni tsuguA 1994. sihT ,noitatnemelpmi depoleved yb ,vonapetS ,eeL dna ressuM gnirud eht noitazidradnats ,ssecorp emaceb eht sisab fo ynam snoitatnemelpmi dereffo yb relipmoc dna yrarbil srodnev .yadot 
+
+
+
+sreniatnoC
+
+ehT LTS sniatnoc ecneuqes sreniatnoc dna evitaicossa .sreniatnoc ehT sreniatnoc era stcejbo taht erots .atad ehT dradnats ecneuqes sreniatnoc edulcni ,rotcev ,euqed dna .tsil ehT dradnats evitaicossa sreniatnoc era ,tes ,tesitlum ,pam ,pamitlum ,tes_hsah ,pam_hsah tesitlum_hsah dna .pamitlum_hsah erehT era osla reniatnoc srotpada ,eueuq ,eueuq_ytiroirp dna ,kcats taht era sreniatnoc htiw cificeps ,ecafretni gnisu rehto sreniatnoc sa .noitatnemelpmi 
+
+
+
+srotaretI
+
+ehT LTS stnemelpmi evif tnereffid sepyt fo .srotareti esehT era tupni srotareti (taht nac ylno eb desu ot daer a ecneuqes fo ,)seulav tuptuo srotareti (taht nac ylno eb desu ot etirw a ecneuqes fo ,)seulav drawrof srotareti (taht nac eb ,daer nettirw ,ot dna evom ,)drawrof lanoitceridib srotareti (taht era ekil drawrof ,srotareti tub nac osla evom )sdrawkcab dna modnar ssecca srotareti (taht nac evom yleerf yna rebmun fo spets ni eno .)noitarepo 
+
+A latnemadnuf LTS tpecnoc si a egnar hcihw si a riap fo srotareti taht etangised eht gninnigeb dna dne fo eht ,noitatupmoc dna tsom fo eht s¯¡yrarbil cimhtirogla setalpmet taht etarepo no atad serutcurts evah secafretni taht esu .segnar 
+
+tI si elbissop ot evah lanoitceridib srotareti tca ekil modnar ssecca ,srotareti os gnivom drawrof net spets dluoc eb enod yb ylpmis gnivom drawrof a pets ta a emit a latot fo net .semit ,revewoH gnivah tcnitsid modnar ssecca srotareti sreffo ycneiciffe .segatnavda roF ,elpmaxe a rotcev dluow evah a modnar ssecca ,rotareti tub a tsil ylno a lanoitceridib .rotareti 
+
+srotaretI era eht rojam erutaef taht wolla eht ytilareneg fo eht .LTS roF ,elpmaxe na mhtirogla ot esrever a ecneuqes nac eb detnemelpmi gnisu lanoitceridib ,srotareti dna neht eht emas noitatnemelpmi nac eb desu no ,stsil srotcev dna .seuqed detaerc-resU sreniatnoc ylno evah ot edivorp na rotareti taht stnemelpmi eno fo eht evif dradnats rotareti ,secafretni dna lla eht smhtirogla dedivorp ni eht LTS nac eb desu no eht .reniatnoc 
+
+sihT ytilareneg osla semoc ta a ecirp ta .semit roF ,elpmaxe gnimrofrep a hcraes no na evitaicossa reniatnoc hcus sa a pam ro tes nac eb hcum rewols gnisu srotareti naht yb gnillac rebmem snoitcnuf dereffo yb eht reniatnoc .flesti sihT si esuaceb na evitaicossa s'reniatnoc sdohtem nac ekat egatnavda fo egdelwonk fo eht lanretni ,erutcurts hcihw si euqapo ot smhtirogla gnisu .srotareti 
+
+
+
+smhtiroglA
+
+A egral rebmun fo smhtirogla ot mrofrep seitivitca hcus sa gnihcraes dna gnitros era dedivorp ni eht ,LTS hcae detnemelpmi ot eriuqer a niatrec level fo rotareti (dna erofereht lliw krow no yna reniatnoc taht sedivorp na ecafretni yb .)srotareti gnihcraeS smhtirogla ekil hcraes_yranib dna dnuob_rewol esu yranib hcraes dna ekil gnitros smhtirogla eriuqer taht eht epyt fo atad tsum tnemelpmi nosirapmoc rotarepo < ro motsuc rotarapmoc noitcnuf tsum eb ;deificeps hcus nosirapmoc rotarepo ro rotarapmoc noitcnuf tsum eetnaraug tcirts kaew .gniredro trapA morf ,eseht smhtirogla era dedivorp rof gnikam paeh morf a egnar fo ,stnemele gnitareneg yllacihpargocixel deredro snoitatumrep fo a egnar fo ,stnemele egrem detros segnar dna mrofrep ,noinu ,noitcesretni ecnereffid fo detros segnar.

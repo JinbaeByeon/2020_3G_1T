@@ -1,0 +1,12 @@
+﻿  Camera.cpp
+  GameFramework.cpp
+  GameObject.cpp
+C:\Users\quswl\source\repos\LabProjects\LabProject02-1\GameObject.cpp(28,19): warning C4390: ';': 제어된 빈 문이 있습니다. 이 문이 필요합니까?
+  GraphicsPipeline.cpp
+  LabProject02-1.cpp
+  Mesh.cpp
+  Player.cpp
+  Scene.cpp
+  stdafx.cpp
+  코드를 생성하고 있습니다...
+  LabProject02-1.vcxproj -> C:\Users\quswl\source\repos\LabProjects\x64\Debug\LabProject02-1.exe

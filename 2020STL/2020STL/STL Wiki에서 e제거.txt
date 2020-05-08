@@ -1,0 +1,42 @@
+Th Standard Tmplat Library (STL) is a softwar library for th C++ programming languag that influncd many parts of th C++ Standard Library. It provids four componnts calld algorithms, containrs, functions, and itrators. 
+
+Th STL provids a st of common classs for C++, such as containrs and associativ arrays, that can b usd with any built-in typ and with any usr-dfind typ that supports som lmntary oprations (such as copying and assignmnt). STL algorithms ar indpndnt of containrs, which significantly rducs th complxity of th library. 
+
+Th STL achivs its rsults through th us of tmplats. This approach provids compil-tim polymorphism that is oftn mor fficint than traditional run-tim polymorphism. Modrn C++ compilrs ar tund to minimiz abstraction pnaltis arising from havy us of th STL. 
+
+Th STL was cratd as th first library of gnric algorithms and data structurs for C++, with four idas in mind: gnric programming, abstractnss without loss of fficincy, th Von Numann computation modl, and valu smantics.
+
+
+
+
+History
+
+In Novmbr 1993 Alxandr Stpanov prsntd a library basd on gnric programming to th ANSI/ISO committ for C++ standardization. Th committ's rspons was ovrwhlmingly favorabl and ld to a rqust from Andrw Konig for a formal proposal in tim for th March 1994 mting. Th committ had svral rqusts for changs and xtnsions and th committ mmbrs mt with Stpanov and Mng L to hlp work out th dtails. Th rquirmnts for th most significant xtnsion (associativ containrs) had to b shown to b consistnt by fully implmnting thm, a task Stpanov dlgatd to David Mussr. A proposal rcivd final approval at th July 1994 ANSI/ISO committ mting. Subsquntly, th Stpanov and L documnt 17 was incorporatd into th ANSI/ISO C++ draft standard (1, parts of clauss 17 through 27). 
+
+Th prospcts for arly widsprad dissmination of STL wr considrably improvd with Hwltt-Packard's dcision to mak its implmntation frly availabl on th Intrnt in August 1994. This implmntation, dvlopd by Stpanov, L, and Mussr during th standardization procss, bcam th basis of many implmntations offrd by compilr and library vndors today. 
+
+
+
+Containrs
+
+Th STL contains squnc containrs and associativ containrs. Th containrs ar objcts that stor data. Th standard squnc containrs includ vctor, dqu, and list. Th standard associativ containrs ar st, multist, map, multimap, hash_st, hash_map, hash_multist and hash_multimap. Thr ar also containr adaptors quu, priority_quu, and stack, that ar containrs with spcific intrfac, using othr containrs as implmntation. 
+
+
+
+Itrators
+
+Th STL implmnts fiv diffrnt typs of itrators. Ths ar input itrators (that can only b usd to rad a squnc of valus), output itrators (that can only b usd to writ a squnc of valus), forward itrators (that can b rad, writtn to, and mov forward), bidirctional itrators (that ar lik forward itrators, but can also mov backwards) and random accss itrators (that can mov frly any numbr of stps in on opration). 
+
+A fundamntal STL concpt is a rang which is a pair of itrators that dsignat th bginning and nd of th computation, and most of th library¡¯s algorithmic tmplats that oprat on data structurs hav intrfacs that us rangs. 
+
+It is possibl to hav bidirctional itrators act lik random accss itrators, so moving forward tn stps could b don by simply moving forward a stp at a tim a total of tn tims. Howvr, having distinct random accss itrators offrs fficincy advantags. For xampl, a vctor would hav a random accss itrator, but a list only a bidirctional itrator. 
+
+Itrators ar th major fatur that allow th gnrality of th STL. For xampl, an algorithm to rvrs a squnc can b implmntd using bidirctional itrators, and thn th sam implmntation can b usd on lists, vctors and dqus. Usr-cratd containrs only hav to provid an itrator that implmnts on of th fiv standard itrator intrfacs, and all th algorithms providd in th STL can b usd on th containr. 
+
+This gnrality also coms at a pric at tims. For xampl, prforming a sarch on an associativ containr such as a map or st can b much slowr using itrators than by calling mmbr functions offrd by th containr itslf. This is bcaus an associativ containr's mthods can tak advantag of knowldg of th intrnal structur, which is opaqu to algorithms using itrators. 
+
+
+
+Algorithms
+
+A larg numbr of algorithms to prform activitis such as sarching and sorting ar providd in th STL, ach implmntd to rquir a crtain lvl of itrator (and thrfor will work on any containr that provids an intrfac by itrators). Sarching algorithms lik binary_sarch and lowr_bound us binary sarch and lik sorting algorithms rquir that th typ of data must implmnt comparison oprator < or custom comparator function must b spcifid; such comparison oprator or comparator function must guarant strict wak ordring. Apart from ths, algorithms ar providd for making hap from a rang of lmnts, gnrating lxicographically ordrd prmutations of a rang of lmnts, mrg sortd rangs and prform union, intrsction, diffrnc of sortd rangs.
