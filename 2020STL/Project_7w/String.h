@@ -9,39 +9,109 @@
 //-----------------------------------------------------------------------------
 #pragma once
 
-class String {
-	size_t len { 0 };
-	char* p { nullptr };
+class String_Iterator {
+	char* p{ nullptr };
 
 public:
-	String( );
+	String_Iterator(char* p) :p{ p } {};
 
-	String( const char* s );
+	bool operator!=(const String_Iterator& rhs) const {
+		return p != rhs.p;
+	}
+	bool operator==(const String_Iterator& rhs) const {
+		return p == rhs.p;
+	}
+	bool operator<(const String_Iterator& rhs) const {
+		return p < rhs.p;
+	}
 
-	virtual ~String( );
+	bool operator>(const String_Iterator& rhs) const {
+		return p > rhs.p;
+	}
+	ptrdiff_t operator-(const String_Iterator rhs) const {
+		return p - rhs.p;
+	}
+	String_Iterator& operator-(const int rhs) {
+		String_Iterator iter(p - rhs);
+		return iter;
+	}
 
-	String( const String& other );
+	String_Iterator& operator+(const ptrdiff_t rhs) const{
+		String_Iterator iter(p + rhs);
+		return iter;
+	}
 
-	String& operator=( const String& rhs );
+	String_Iterator& operator++() {
+		++p;
+		return *this;
+	}
+	String_Iterator& operator--() {
+		--p;
+		return *this;
+	}
 
-	String( String&& other ) noexcept;
+	char& operator*() {
+		return *p;
+	}
+	char operator*() const{
+		return *p;
+	}
+	char& operator[](size_t idx) {
+		return p[idx];
+	}
+	char operator[](size_t idx) const {
+		return p[idx];
+	}
+};
 
-	String& operator=( String&& rhs ) noexcept;
+template<>
+struct std::iterator_traits<String_Iterator> {
+	using iterator_category = random_access_iterator_tag;
+	using value_type = char;
+	using difference_type = ptrdiff_t; 
+	using pointer = char*; 
+	using reference = char&;
+};
 
-	char& operator[]( size_t idx );
+class String {
+	size_t len{ 0 };
+	char* p{ nullptr };
 
-	char operator[]( size_t idx ) const;
+public:
 
-	size_t size( ) const;
+	String();
 
-	std::string getString( ) const;
+	String(const char* s);
+
+	virtual ~String();
+
+	String(const String& other);
+
+	String& operator=(const String& rhs);
+
+	String(String&& other) noexcept;
+
+	String& operator=(String&& rhs) noexcept;
+
+	char& operator[](size_t idx);
+
+	char operator[](size_t idx) const;
+
+	size_t size() const;
+
+	std::string getString() const;
 
 	bool operator==(const String& rhs) const noexcept;
+
 
 	bool operator<(const String& rhs) const noexcept;
 
 	bool operator>(const String& rhs) const noexcept;
 
-	friend std::ostream& operator<<( std::ostream& os, const String& s );
-};
+	friend std::ostream& operator<<(std::ostream& os, const String& s);
 
+	using iterator = String_Iterator;
+	
+	iterator begin();
+	iterator end();
+};
