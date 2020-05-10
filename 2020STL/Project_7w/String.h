@@ -9,11 +9,13 @@
 //-----------------------------------------------------------------------------
 #pragma once
 
+
 class String_Iterator {
 	char* p{ nullptr };
 
 public:
 	String_Iterator(char* p) :p{ p } {};
+	String_Iterator() {};
 
 	bool operator!=(const String_Iterator& rhs) const {
 		return p != rhs.p;
@@ -30,6 +32,9 @@ public:
 	}
 	ptrdiff_t operator-(const String_Iterator rhs) const {
 		return p - rhs.p;
+	}
+	String_Iterator& operator=(const char rhs) {
+		
 	}
 	String_Iterator& operator-(const int rhs) {
 		String_Iterator iter(p - rhs);
@@ -62,6 +67,7 @@ public:
 	char operator[](size_t idx) const {
 		return p[idx];
 	}
+
 };
 
 template<>
@@ -76,6 +82,7 @@ struct std::iterator_traits<String_Iterator> {
 class String {
 	size_t len{ 0 };
 	char* p{ nullptr };
+	size_t capacity{ 0 };
 
 public:
 
@@ -92,6 +99,8 @@ public:
 	String(String&& other) noexcept;
 
 	String& operator=(String&& rhs) noexcept;
+
+	String& operator=(String& rhs);
 
 	char& operator[](size_t idx);
 
@@ -111,7 +120,22 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const String& s);
 
 	using iterator = String_Iterator;
-	
 	iterator begin();
 	iterator end();
+
+	/* 7_2 back_inserter 구현 관련 String 함수*/
+	void push_back(char rhs);
+	void reserve(int n);
+};
+
+/* 7_2 String_back_insert_iterator 구현*/
+class String_back_insert_iterator {
+public:
+	String_back_insert_iterator(String& str);
+	String_back_insert_iterator& operator=(char&& rhs);
+	String_back_insert_iterator& operator=(const char& rhs);
+	String_back_insert_iterator& operator++();
+	String_back_insert_iterator& operator*();
+protected:
+	String* p{ nullptr };
 };

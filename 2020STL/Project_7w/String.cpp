@@ -21,7 +21,7 @@ String::String() {
 };
 
 String::String(const char* s)
-try : len{ strlen(s) }, p{ new char[len] } {
+try : len{ strlen(s) }, capacity{ len * 2 + 10 }, p{ new char[capacity] } {
 #ifdef 관찰
 	std::cout << "생성자(char*): 객체-" << this << ", 길이-" << len << ", 메모리-" << static_cast<void*>(p) << std::endl;
 #endif
@@ -41,10 +41,11 @@ String::~String() {
 		delete[] p;
 
 	len = 0;
+	capacity = 0;
 }
 
 String::String(const String& other)
-try : len{ other.len }, p{ new char[len] } {
+try : len{ other.len }, capacity{ other.capacity }, p{ new char[capacity] } {
 #ifdef 관찰
 	std::cout << "복사생성자: 객체-" << this << ", 길이-" << len << ", 메모리-" << static_cast<void*>(p) << std::endl;
 #endif
@@ -59,9 +60,10 @@ String& String::operator=(const String& rhs)
 try {
 	if (this != &rhs) {
 		if (p)
-			delete p;
+			delete[] p;
 		len = rhs.len;
-		p = new char[len];
+		capacity = rhs.capacity;
+		p = new char[capacity];
 		memcpy(p, rhs.p, len);
 #ifdef 관찰
 		std::cout << "할당연산자: 객체-" << this << ", 길이-" << len << ", 메모리-" << static_cast<void*>(p) << std::endl;
@@ -74,30 +76,39 @@ catch (std::exception & e) {
 	throw e;
 }
 
-String::String(String&& other) noexcept : len{ other.len }, p{ other.p }  {
+String::String(String&& other) noexcept : len{ other.len }, p{ other.p }, capacity{ other.capacity }  {
 	// 이동 시 예외발생 코드 없음
 #ifdef 관찰
 	std::cout << "이동생성자: 객체-" << this << ", 길이-" << len << ", 메모리-" << static_cast<void*>(p) << std::endl;
 #endif
 	other.len = 0;
 	other.p = nullptr;
+	other.capacity = 0;
 }
 
 String& String::operator=(String&& rhs) noexcept {
 	if (this != &rhs) {
+		*this = rhs;
 		if (p)
-			delete p;
+			delete[] p;
 		len = rhs.len;
 		p = rhs.p;
+		capacity = rhs.capacity;
 #ifdef 관찰
 		std::cout << "이동할당연산자: 객체-" << this << ", 길이-" << len << ", 메모리-" << static_cast<void*>(p) << std::endl;
 #endif
 		rhs.len = 0;
 		rhs.p = nullptr;
+		rhs.capacity = 0;
 	}
-	return*this;
+	return *this;
 }
 
+String& String::operator=(String& rhs)
+{
+	*this = rhs;
+	return *this;
+}
 char& String::operator[](size_t idx) {
 	return p[idx];
 }
@@ -107,7 +118,7 @@ char String::operator[](size_t idx) const {
 }
 
 size_t String::size() const {
-	return len;
+	return capacity;
 }
 
 
@@ -151,4 +162,51 @@ String::iterator String::begin()
 String::iterator String::end()
 {
 	return iterator(p + len);
+}
+
+/* 7_2 back_inserter 구현 관련 String 함수*/
+void String::push_back(char rhs)
+{
+	if (len >= capacity) {
+		++capacity *= 2;
+		if (p) {
+			char* tmp = new char[len];
+			memcpy(tmp, p, len);
+			delete[] p;
+			p = new char[capacity];
+			memcpy(p, tmp, len);
+			delete[]tmp;
+		}
+		else
+			p = new char[capacity];
+	}
+	p[len++] = rhs;
+}
+
+void String::reserve(int n)
+{
+	capacity = n;
+	char* tmp = new char[len];
+	memcpy(tmp, p, len);
+	delete[] p;
+	p = new char[capacity];
+	memcpy(p, tmp, len);
+	delete[] tmp;
+}
+
+/* 7_2 String_back_insert_iterator 구현*/
+String_back_insert_iterator::String_back_insert_iterator(String& str) : p{ &str } {}
+String_back_insert_iterator& String_back_insert_iterator::operator=(char&& rhs) {
+	p->push_back(rhs);
+	return *this;
+}
+String_back_insert_iterator& String_back_insert_iterator::operator=(const char& rhs) {
+	p->push_back(rhs);
+	return *this;
+}
+String_back_insert_iterator& String_back_insert_iterator::operator++() {
+	return *this;
+}
+String_back_insert_iterator& String_back_insert_iterator::operator*() {
+	return *this;
 }
