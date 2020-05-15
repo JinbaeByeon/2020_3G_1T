@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="5월12일 강의.cpp" />
     <ClCompile Include="7_1 Iterator.cpp" />
     <ClCompile Include="String.cpp" />
   </ItemGroup>
