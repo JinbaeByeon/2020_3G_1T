@@ -19,12 +19,11 @@ int main()
  	string str{ "The quick brown fox jumps over the lazy dog" };
 	String s{};
 //	s.reserve(str.size());
-	copy(str.begin(), str.end(), String_back_insert_iterator(s));
+	my_copy(str.begin(), str.end(), String_back_insert_iterator(s));
 	
 	cout << "s: " << s << endl
 		<< "str: " << str << endl;
 	cout << "¿Ï·á" << endl;
-
 
 
 

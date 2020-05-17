@@ -92,18 +92,29 @@ bool IntCmp(const int& a, const int& b) {
 //}
 
 /*Set Dog 실습*/
-Dog dog[10000];
-multiset<Dog> dogs;
 int main()
 {
 	ifstream in("Dog만마리", ios::binary);
-	in.read((char*)dog, sizeof(dog));
-//	set<Dog> dogs{ istream_iterator<Dog>(in),istream_iterator<Dog>() };
+	if (!in) {
+		cout << "파일 읽기 실패" << endl;
+		return 0;
+	}
+	//Dog dog[10000];
+	//multiset<Dog> dogs;
+	//in.read((char*)dog, sizeof(dog));
+	//for (int i = 0; i < 10000; ++i)
+	//	dogs.insert(dog[i]);
 
-	for (int i = 0; i < 10000; ++i)
-		dogs.insert(dog[i]);
-	cout << dogs.size() << endl;
+	multiset<Dog> dogs{ istream_iterator<Dog>(in),istream_iterator<Dog>() };
+	map<Dog, int> mdogs;
 	for (const auto& dog : dogs)
-		cout << dog.getName() << endl;
+		++mdogs[dog];
+	for (const auto& [dog, num] : mdogs)
+		if (num > 1)
+			cout << dog.getName() << endl;
+	//for (const auto& dog : dogs)
+	//	cout << dog.getName() << endl;
 
+	cout << dogs.size() << endl;
+	
 }

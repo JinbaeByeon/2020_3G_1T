@@ -21,6 +21,9 @@
     <ClInclude Include="save.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Dog.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="save.cpp">
@@ -29,7 +32,13 @@
     <ClCompile Include="String.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Dog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="중간고사 예제시험.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="5월11일 강의.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

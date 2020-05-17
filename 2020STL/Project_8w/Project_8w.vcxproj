@@ -139,10 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dog.h" />
     <ClInclude Include="save.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="5월11일 강의.cpp" />
+    <ClCompile Include="Dog.cpp" />
     <ClCompile Include="save.cpp" />
     <ClCompile Include="String.cpp" />
     <ClCompile Include="중간고사 예제시험.cpp" />

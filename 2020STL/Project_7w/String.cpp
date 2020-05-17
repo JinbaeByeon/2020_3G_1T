@@ -21,7 +21,7 @@ String::String() {
 };
 
 String::String(const char* s)
-try : len{ strlen(s) }, capacity{ len * 2 + 10 }, p{ new char[capacity] } {
+try : len{ strlen(s) }, capacity{ len }, p{ new char[capacity] } {
 #ifdef 관찰
 	std::cout << "생성자(char*): 객체-" << this << ", 길이-" << len << ", 메모리-" << static_cast<void*>(p) << std::endl;
 #endif

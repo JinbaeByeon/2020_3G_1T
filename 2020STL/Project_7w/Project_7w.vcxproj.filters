@@ -15,13 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="7_1 Iterator.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="String.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="5월12일 강의.cpp">
+    <ClCompile Include="7_2 Generic Function.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
