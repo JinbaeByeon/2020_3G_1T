@@ -55,6 +55,13 @@ void CGameObject::Move(const XMFLOAT3& vDirection, float fSpeed)
 		vDirection.z * fSpeed);
 }
 
+void CGameObject::Move(float x, float y, float z)
+{
+	m_xmf4x4World._41 += x;
+	m_xmf4x4World._42 += y;
+	m_xmf4x4World._43 += z;
+}
+
 void CGameObject::Animate(float fElapsedTime)
 {
 	if (m_fRotationSpeed != 0.0f) Rotate(m_xmf3RotationAxis,
@@ -74,4 +81,63 @@ void CGameObject::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 		::SelectObject(hDCFrameBuffer, hOldPen);
 		::DeleteObject(hPen);
 	}
+}
+
+bool CGameObject::IsVisible(CCamera* pCamera)
+{
+	BoundingBox xmbbModel = m_pMesh->m_xmBoundingBox;
+	xmbbModel.Transform(xmbbModel, XMLoadFloat4x4(&m_xmf4x4World));
+	bool bIsVisible = pCamera->IsInFrustum(xmbbModel);
+	
+	return bIsVisible;
+}
+
+CMap::CMap()
+{
+	SetMesh(new CMapMesh());
+	SetColor(RGB(0, 0, 0));
+}
+
+CGun::CGun()
+{
+	m_ppBullets = new CBullet * [1000];
+	m_fMovingSpeed = 40.f;
+}
+
+void CGun::Shot()
+{
+	m_ppBullets[m_nBullets] = new CBullet();
+	m_ppBullets[m_nBullets]->SetMesh(new CCubeMesh(1.f,1.f,1.f));
+	m_ppBullets[m_nBullets]->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
+	m_ppBullets[m_nBullets]->SetMovingDirection(m_xmf3MovingDirection);
+	m_ppBullets[m_nBullets]->SetMovingRange(500.f);
+	m_ppBullets[m_nBullets]->SetMovingSpeed(m_fMovingSpeed);
+	m_ppBullets[m_nBullets]->SetRotationSpeed(100.f);
+	m_ppBullets[m_nBullets]->SetRotationAxis(m_xmf3RotationAxis);
+	++m_nBullets;
+}
+
+void CGun::Render(HDC hDCFrameBuffer, CCamera* pCamera)
+{
+	if (m_nBullets)
+		for (int i = 0; i < m_nBullets; ++i)
+			m_ppBullets[i]->Render(hDCFrameBuffer, pCamera);
+}
+
+void CGun::Animate(float fElapsedTime)
+{
+	for (int i = 0; i < m_nBullets; ++i) {
+		m_ppBullets[i]->Animate(fElapsedTime);
+		if (m_ppBullets[i]->time >= 2) {
+			for (int j = i; j < m_nBullets - 1; ++j)
+				m_ppBullets[j] = m_ppBullets[j + 1];
+			--m_nBullets;
+		}
+	}
+
+}
+void CBullet::Animate(float fElapsedTime)
+{
+	CGameObject::Animate(fElapsedTime);
+	time += fElapsedTime;
 }

@@ -48,6 +48,8 @@ public:
 
 	CViewport			m_Viewport;
 
+	BoundingFrustum m_xmFrustum;
+
 public:
 	//카메라 변환 행렬을 생성한다
 	void GenerateViewMatrix();
@@ -58,6 +60,9 @@ public:
 
 	void SetViewport(int xStart, int yStart, int nWidth, int nHeight);
 	void SetFOVAngle(float fFOVAngle);
+
+	void GenerateFrustum();
+	bool IsInFrustum(BoundingBox& xmbbWorld);
 
 	//3인칭 카메라에서 카메라가 바라보는 지점을 설정한다. 일반적으로 플레이어를 바라보도록 설정한다. 
 	void SetLookAt(XMFLOAT3& xmf3LookAt, XMFLOAT3& xmf3Up);

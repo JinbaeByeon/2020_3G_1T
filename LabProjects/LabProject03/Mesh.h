@@ -49,10 +49,13 @@ public:
 	void SetPolygon(int nIndex, CPolygon *pPolygon);
 
 	virtual void Render(HDC hDCFrameBuffer);
+public:
+	BoundingBox m_xmBoundingBox;
 };
 
 class CCubeMesh : public CMesh
 {
+private:
 public:
 	CCubeMesh(float fWidth = 4.0f, float fHeight = 4.0f, float fDepth = 4.0f);
 	virtual ~CCubeMesh();
@@ -60,7 +63,16 @@ public:
 
 class CAirplaneMesh :public CMesh
 {
+private:
 public:
 	CAirplaneMesh(float fwidth, float fHeight, float fDepth);
 	virtual ~CAirplaneMesh() {};
+};
+
+class CMapMesh :public CMesh
+{
+private:
+public:
+	CMapMesh(float fWidth = 100.0f, float fHeight = 100.0f, float fDepth = 600.0f);
+	virtual ~CMapMesh() {}
 };

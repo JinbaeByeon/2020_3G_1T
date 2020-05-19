@@ -6,9 +6,10 @@
 class CPlayer : public CGameObject
 {
 public:
-	CPlayer() {}
+	CPlayer() { m_pGun = new CGun(); }
 	virtual ~CPlayer() {
 		if (m_pCamera) delete m_pCamera;
+		if (m_pGun) delete m_pGun;
 	}
 
 public:
@@ -34,7 +35,7 @@ public:
 
 	//플레이어에 현재 설정된 카메라이다.
 	CCamera*		m_pCamera = NULL;
-
+	CGun*			m_pGun = NULL;
 public:
 	void SetPosition(float x, float y, float z);
 	void SetRotation(float x, float y, float z);
@@ -61,6 +62,11 @@ public:
 
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
 	CCamera* GetCamera() { return(m_pCamera); }
+
+	void Shot();
+	void Render(HDC hDCFrameBuffer, CCamera* pCamera);
+
+	bool IsInMap(BoundingBox& xmbbMap);
 };
 
 class CAirplanePlayer : public CPlayer

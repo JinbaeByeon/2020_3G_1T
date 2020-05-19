@@ -153,3 +153,15 @@ void CCamera::Update(CPlayer* pPlayer, XMFLOAT3& xmf3LookAt, float fTimeElapsed)
 		SetLookAt(pPlayer->m_xmf3Position, pPlayer->m_xmf3Up);
 	}
 }
+
+void CCamera::GenerateFrustum()
+{
+	m_xmFrustum.CreateFromMatrix(m_xmFrustum, XMLoadFloat4x4(&m_xmf4x4Project));
+	XMMATRIX xmmtxInversView = XMMatrixInverse(NULL, XMLoadFloat4x4(&m_xmf4x4View));
+	m_xmFrustum.Transform(m_xmFrustum, xmmtxInversView);
+}
+
+bool CCamera::IsInFrustum(BoundingBox& xmbbWorld)
+{
+	return(m_xmFrustum.Contains(xmbbWorld) != DirectX::DISJOINT);
+}

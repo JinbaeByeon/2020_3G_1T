@@ -35,9 +35,6 @@
     <ClCompile Include="Dog.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="중간고사 예제시험.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="5월11일 강의.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

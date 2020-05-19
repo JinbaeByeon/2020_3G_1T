@@ -56,7 +56,7 @@ void XM_CALLCONV Draw2DLine(HDC hDCFrameBuffer, XMFLOAT3& f3PreviousProject, XMF
 
 void CMesh::Render(HDC hDCFrameBuffer)
 {
-	XMFLOAT3 f3InitialProject, f3PreviousProject, f3Intersect;
+	XMFLOAT3 f3InitialProject, f3PreviousProject;
 	bool bPreviousInside = false, bInitialInside = false, bCurrentInside = false, bIntersectInside = false;
 
 	for (int j = 0; j < m_nPolygons; j++)
@@ -85,7 +85,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	float fHalfWidth = fWidth * 0.5f;
 	float fHalfHeight = fHeight * 0.5f;
 	float fHalfDepth = fDepth * 0.5f;
-
+	
 	CPolygon *pFrontFace = new CPolygon(4);
 	pFrontFace->SetVertex(0, CVertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(1, CVertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
@@ -127,6 +127,8 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	pRightFace->SetVertex(2, CVertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pRightFace->SetVertex(3, CVertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
 	SetPolygon(5, pRightFace);
+
+	m_xmBoundingBox = BoundingBox(XMFLOAT3(0, 0, 0), XMFLOAT3(fHalfWidth, fHalfHeight, fHalfDepth));
 }
 
 CCubeMesh::~CCubeMesh()
@@ -267,4 +269,55 @@ CAirplaneMesh::CAirplaneMesh(float fWidth, float fHeight, float fDepth) :CMesh(2
 	pFace->SetVertex(1, CVertex(-fx, -y3, +fz));
 	pFace->SetVertex(2, CVertex(-fx, -y3, -fz));
 	SetPolygon(i++, pFace);
+
+	m_xmBoundingBox = BoundingBox(XMFLOAT3(0, 0, 0), XMFLOAT3(fx, fy, fz));
+}
+
+CMapMesh::CMapMesh(float fWidth, float fHeight, float fDepth):CMesh(3600)
+{
+	const int numPlane = 30;
+	const float fHalfWidth = fWidth * 0.5f;
+	const float fHalfHeight = fHeight * 0.5f;
+	const float fHalfDepth = fDepth * 0.5f;
+
+	CPolygon* pFace = new CPolygon;
+	int idx;
+	float wM, wP;
+	float hM, hP;
+	for (int i = 0; i < numPlane; ++i) {
+		for (int j = 0; j < numPlane; ++j) {
+			idx = i * numPlane + j;
+			wM = (-1.f + (2.f * i) / numPlane), wP = (-1.f + 2.f * (i + 1) / numPlane);
+			hM = (-1.f + (2.f * j) / numPlane), hP = (-1.f + 2.f * (j + 1) / numPlane);
+			pFace = new CPolygon(4);
+			pFace->SetVertex(0, CVertex(fHalfWidth * wM, +fHalfHeight, fHalfDepth * hP));
+			pFace->SetVertex(1, CVertex(fHalfWidth * wP, +fHalfHeight, fHalfDepth * hP));
+			pFace->SetVertex(2, CVertex(fHalfWidth * wP, +fHalfHeight, fHalfDepth * hM));
+			pFace->SetVertex(3, CVertex(fHalfWidth * wM, +fHalfHeight, fHalfDepth * hM));
+			SetPolygon(4 * (idx), pFace);
+
+			pFace = new CPolygon(4);
+			pFace->SetVertex(0, CVertex(fHalfWidth * wM, -fHalfHeight, fHalfDepth * hM));
+			pFace->SetVertex(1, CVertex(fHalfWidth * wP, -fHalfHeight, fHalfDepth * hM));
+			pFace->SetVertex(2, CVertex(fHalfWidth * wP, -fHalfHeight, fHalfDepth * hP));
+			pFace->SetVertex(3, CVertex(fHalfWidth * wM, -fHalfHeight, fHalfDepth * hP));
+			SetPolygon(4 * (idx) + 1, pFace);
+
+			pFace = new CPolygon(4);
+			pFace->SetVertex(0, CVertex(-fHalfWidth, fHalfHeight * wP, fHalfDepth * hP));
+			pFace->SetVertex(1, CVertex(-fHalfWidth, fHalfHeight * wP, fHalfDepth * hM));
+			pFace->SetVertex(2, CVertex(-fHalfWidth, fHalfHeight * wM, fHalfDepth * hM));
+			pFace->SetVertex(3, CVertex(-fHalfWidth, fHalfHeight * wM, fHalfDepth * hP));
+			SetPolygon(4 * (idx) + 2, pFace);
+
+			pFace = new CPolygon(4);
+			pFace->SetVertex(0, CVertex(+fHalfWidth, fHalfHeight * wP, fHalfDepth * hM));
+			pFace->SetVertex(1, CVertex(+fHalfWidth, fHalfHeight * wP, fHalfDepth * hP));
+			pFace->SetVertex(2, CVertex(+fHalfWidth, fHalfHeight * wM, fHalfDepth * hP));
+			pFace->SetVertex(3, CVertex(+fHalfWidth, fHalfHeight * wM, fHalfDepth * hM));
+			SetPolygon(4 * (idx) + 3, pFace);
+		}
+	}
+
+	m_xmBoundingBox = BoundingBox(XMFLOAT3(0, 0, 0), XMFLOAT3(fHalfWidth, fHalfHeight, fHalfDepth));	
 }

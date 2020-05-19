@@ -7,7 +7,7 @@ class CGameObject
 {
 public:
 	CGameObject() { }
-	~CGameObject();
+	virtual ~CGameObject();
 
 public:
 	bool			m_bActive = true;
@@ -22,8 +22,11 @@ public:
 	float			m_fMovingSpeed = 0.f;
 	float			m_fMovingRange = 0.f;
 
-	XMFLOAT3 m_xmf3RotationAxis = XMFLOAT3(0.f, 1.f, 0.f);
+	XMFLOAT3		m_xmf3RotationAxis = XMFLOAT3(0.f, 1.f, 0.f);
 	float			m_fRotationSpeed = 0.0f;
+	
+	XMFLOAT3		m_xmf3SizeBox;
+
 
 public:
 	void SetMesh(CMesh *pMesh) { m_pMesh = pMesh; if (pMesh) pMesh->AddRef(); }
@@ -46,9 +49,34 @@ public:
 	
 	void Rotate(float fPitch, float fYaw, float fRoll);
 	void Rotate(const XMFLOAT3& xmf3Axis, float fAngle);
+
+	bool IsVisible(CCamera* pCamera);
 	
 	virtual void OnUpdateTransform() { }
 	virtual void Animate(float fElapsedTime);
-	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);	
+	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 };
 
+class CMap : public CGameObject {
+public:
+	CMap();
+};
+
+class CBullet : public CGameObject {
+private:
+public:
+	float time = 0;
+	CBullet() {};
+	void Animate(float fElapsedTime);
+};
+
+class CGun : public CGameObject {
+private:
+	CBullet** m_ppBullets = NULL;
+	int m_nBullets = 0;
+public:
+	CGun();
+	void Shot();
+	void Render(HDC hDCFrameBuffer, CCamera* pCamera);
+	void Animate(float fElapsedTime);
+};

@@ -148,7 +148,6 @@
     <ClCompile Include="Dog.cpp" />
     <ClCompile Include="save.cpp" />
     <ClCompile Include="String.cpp" />
-    <ClCompile Include="중간고사 예제시험.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

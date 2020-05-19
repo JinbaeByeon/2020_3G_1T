@@ -65,8 +65,10 @@ void CGameFramework::BuildObjects()
 {
 	CCamera* pCamera = new CCamera();
 	pCamera->SetViewport(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-	pCamera->GeneratePerspectiveProjectionMatrix(1.01f, 500.0f, 60.0f);
+	pCamera->GeneratePerspectiveProjectionMatrix(10.01f, 500.0f, 60.0f);
+	pCamera->GenerateFrustum();
 	pCamera->SetFOVAngle(60.0f);
+
 
 	//비행기 메쉬를 생성하고 플레이어 객체에 연결한다. 
 	CAirplaneMesh* pAirplaneMesh = new CAirplaneMesh(6.0f, 6.0f, 1.0f);
@@ -174,7 +176,7 @@ void CGameFramework::ProcessInput()
 		if (pKeyBuffer[VK_RIGHT] & 0xF0)dwDirection |= DIR_RIGHT;
 		if (pKeyBuffer[VK_PRIOR] & 0xF0)dwDirection |= DIR_UP;
 		if (pKeyBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
-
+		if (pKeyBuffer[VK_LCONTROL] & 0xF0) m_pPlayer->Shot();
 		//키 입력이 있으면 플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
 		if (dwDirection) m_pPlayer->Move(dwDirection, 0.15f);
 	}
@@ -227,7 +229,7 @@ void CGameFramework::FrameAdvance()
 	ProcessInput();
 	AnimateObjects();
 
-	ClearFrameBuffer(RGB(75, 45, 105));
+	ClearFrameBuffer(RGB(255, 255, 255));
 
 	CCamera* pCamera = m_pPlayer->GetCamera();
 	if (m_pScene) m_pScene->Render(m_hDCFrameBuffer, pCamera);

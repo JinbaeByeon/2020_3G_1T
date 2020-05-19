@@ -14,6 +14,9 @@ XMFLOAT3 CGraphicsPipeline::Project(XMFLOAT3& xmf3Model)
 	xmv4Project /= fabsf(XMVectorGetW(xmv4Project));
 	XMFLOAT3 xmf3Project;
 	XMStoreFloat3(&xmf3Project, xmv4Project);
+
+	//XMFLOAT3 xmf3Project;
+	//XMStoreFloat3(&xmf3Project, XMVector3TransformCoord(XMLoadFloat3(&xmf3Model), xmmtxModelToProject));
 	return(xmf3Project);
 }
 

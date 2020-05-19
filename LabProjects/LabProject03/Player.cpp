@@ -18,6 +18,7 @@ void CPlayer::SetCameraOffset(const XMFLOAT3& xmf3CameraOffset)
 	XMStoreFloat3(&xmf3CameraPosition, XMVectorAdd(XMLoadFloat3(&m_xmf3Position), XMLoadFloat3(&m_xmf3CameraOffset)));
 	m_pCamera->SetLookAt(xmf3CameraPosition, m_xmf3Position, m_xmf3Up);
 	m_pCamera->GenerateViewMatrix();
+	m_pCamera->GenerateFrustum();
 }
 
 /*플레이어의 위치를 변경하는 함수이다. 플레이어의 위치는 기본적으로 사용자가 플레이어를 이동하기
@@ -126,6 +127,7 @@ void CPlayer::Update(float fTimeElapsed)
 	Move(m_xmf3Velocity, false);
 	m_pCamera->Update(this, m_xmf3Position, fTimeElapsed);
 	m_pCamera->GenerateViewMatrix();
+	m_pCamera->GenerateFrustum();
 
 	/*플레이어의 속도 벡터가 마찰력 때문에 감속이 되어야 한다면 감속 벡터를 생성한다. 속도 벡터의 반
 	대 방향 벡터를 구하고 단위 벡터로 만든다. 마찰 계수를 시간에 비례하도록 하여 마찰력을 구한다. 단
@@ -138,6 +140,12 @@ void CPlayer::Update(float fTimeElapsed)
 	float fDeceleration = m_fFriction * fTimeElapsed;
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	XMStoreFloat3(&m_xmf3Velocity, XMVectorAdd(xmvVelocity, XMVectorScale(xmvDeceleration, fDeceleration)));
+
+	m_pGun->m_xmf4x4World._41 = m_xmf3Position.x;
+	m_pGun->m_xmf4x4World._42 = m_xmf3Position.y;
+	m_pGun->m_xmf4x4World._43 = m_xmf3Position.z;
+	m_pGun->SetMovingDirection(m_xmf3Look);
+	m_pGun->SetRotationAxis(m_xmf3Look);
 }
 
 void CPlayer::Animate(float fElapsedTime)
@@ -145,6 +153,8 @@ void CPlayer::Animate(float fElapsedTime)
 	//플레이어의 위치과 방향 벡터에 따라 월드 변환 행렬을 구한다. 
 	OnUpdateTransform();
 	CGameObject::Animate(fElapsedTime);
+	if(m_pGun)
+		m_pGun->Animate(fElapsedTime);
 }
 
 /*플레이어의 위치와 회전축으로부터 월드 변환 행렬을 생성하는 함수이다. 플레이어의 Right 벡터가 월
@@ -167,3 +177,25 @@ void CAirplanePlayer::OnUpdateTransform()
 		XMConvertToRadians(90.0f), 0.0f, 0.0f), XMLoadFloat4x4(&m_xmf4x4World)));
 }
 
+
+
+void CPlayer::Shot()
+{
+	if (m_pGun)
+		m_pGun->Shot();
+}
+
+void CPlayer::Render(HDC hDCFrameBuffer, CCamera* pCamera)
+{
+	CGameObject::Render(hDCFrameBuffer, pCamera);
+	if(m_pGun)
+		m_pGun->Render(hDCFrameBuffer, pCamera);
+}
+
+bool CPlayer::IsInMap(BoundingBox& xmbbMap)
+{
+	BoundingBox xmbbWorld = m_pMesh->m_xmBoundingBox;
+	xmbbWorld.Transform(xmbbWorld, XMLoadFloat4x4(&m_xmf4x4World));
+
+	return (xmbbMap.Contains(xmbbWorld) == DirectX::CONTAINS);
+}

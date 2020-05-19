@@ -57,17 +57,28 @@ void CScene::BuildObjects()
 	m_ppObjects[4]->SetRotationSpeed(50.06f);
 	m_ppObjects[4]->SetMovingDirection(XMFLOAT3(0.0f, 1.0f, 1.0f));
 	m_ppObjects[4]->SetMovingSpeed(0.0f);
+
+	m_pMap = new CMap();
 }
 
 void CScene::ReleaseObjects()
 {
 	for (int i = 0; i < m_nObjects; i++) if (m_ppObjects[i]) delete m_ppObjects[i];
 	if (m_ppObjects) delete[] m_ppObjects;
+
+	if (m_pMap) delete m_pMap;
 }
 
 void CScene::Animate(float fElapsedTime)
 {
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fElapsedTime);
+	CheckCollision();
+	if (m_pPlayer->m_xmf3Position.z <= -20.f || m_pPlayer->m_xmf3Position.z >= 20.f) {
+		for (int i = 0; i < m_nObjects; ++i)
+			m_ppObjects[i]->Move(0, 0, -m_pPlayer->m_xmf3Position.z);
+		m_pPlayer->m_pCamera->Move(XMFLOAT3(0, 0, -m_pPlayer->m_xmf3Position.z));
+		m_pPlayer->m_xmf3Position.z = 0;
+	}
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
@@ -77,6 +88,21 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 
 	for (int i = 0; i < m_nObjects; i++)
 	{
-		m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
+		if(m_ppObjects[i]->IsVisible(pCamera))
+			m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
 	}
+	m_pMap->Render(hDCFrameBuffer, pCamera);
+}
+
+void CScene::CheckCollision()
+{
+	//맵 충돌검사
+	if (!m_pPlayer->IsInMap(m_pMap->m_pMesh->m_xmBoundingBox)) {
+		m_pPlayer->m_pCamera->Move(-m_pPlayer->m_xmf3Position.x, -m_pPlayer->m_xmf3Position.y, -m_pPlayer->m_xmf3Position.z);
+		m_pPlayer->SetPosition(0, 0, 0);
+	}
+
+	// 객체 충돌검사
+	for (int i = 0; i < m_nObjects; ++i);
+		
 }
