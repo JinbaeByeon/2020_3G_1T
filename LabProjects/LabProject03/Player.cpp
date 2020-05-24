@@ -146,6 +146,7 @@ void CPlayer::Update(float fTimeElapsed)
 	m_pGun->m_xmf4x4World._43 = m_xmf3Position.z;
 	m_pGun->SetMovingDirection(m_xmf3Look);
 	m_pGun->SetRotationAxis(m_xmf3Look);
+	m_pGun->Update(fTimeElapsed);
 }
 
 void CPlayer::Animate(float fElapsedTime)

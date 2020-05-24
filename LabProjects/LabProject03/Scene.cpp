@@ -101,12 +101,13 @@ void CScene::CheckCollision()
 		m_pPlayer->m_pCamera->Move(-m_pPlayer->m_xmf3Position.x, -m_pPlayer->m_xmf3Position.y, -m_pPlayer->m_xmf3Position.z);
 		m_pPlayer->SetPosition(0, 0, 0);
 	}
-
+	m_pPlayer->m_pGun->CheckBulletsInMap(m_pMap->m_pMesh->m_xmBoundingBox);
 	// 객체 충돌검사
 	for (int i = 0; i < m_nObjects; ++i)
 		if (m_pPlayer->m_pGun->bCollisionBullets(m_ppObjects[i]->XMBBWorld()))
 			;
-		
+
+
 }
 
 bool CScene::isClickObject(int xMouse, int yMouse)
@@ -140,7 +141,9 @@ bool CScene::isClickObject(int xMouse, int yMouse)
 			}
 		}
 	}
-	if (idx != -1)
+	if (idx != -1) {
+		m_pPlayer->m_pGun->SetTarget(m_ppObjects[idx]);
 		return true;
+	}
 	return false;
 }

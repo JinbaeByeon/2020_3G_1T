@@ -63,26 +63,33 @@ public:
 	CMap();
 };
 
-class CBullet : public CGameObject {
+class CBullet : public CGameObject { 
 private:
+	CGameObject* m_pTarget = NULL;
 public:
-	float time = 0;
+	bool m_bTarget = false;
+	float m_time = 0;
+public:
 	CBullet() {};
 	void Animate(float fElapsedTime);
-
-	void SetTarget(XMFLOAT3& xmf3position);
-	void SetTarget(float x, float y,float z);
+	void SetTarget(CGameObject* pObject);
+	void Update(float fTimeElapsed);
 };
 
 class CGun : public CGameObject {
 private:
 	CBullet** m_ppBullets = NULL;
 	int m_nBullets = 0;
+	CGameObject* m_pTarget = NULL;
+	bool m_bTarget = false;
 public:
 	CGun();
 	void Shot();
 	void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 	void Animate(float fElapsedTime);
 	bool bCollisionBullets(BoundingBox& xmbbWolrd);
+	void CheckBulletsInMap(BoundingBox& xmbbMap);
 	void DeleteBullet(const int& idx);
+	void SetTarget(CGameObject* pObject);
+	void Update(float fTimeElapsed);
 };

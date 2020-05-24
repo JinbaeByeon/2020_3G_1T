@@ -120,21 +120,28 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+//	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
+		static UCHAR pKeyBuffer[256];
+		::GetKeyboardState(pKeyBuffer);
+		if (pKeyBuffer[VK_LCONTROL] & 0xF0)
+			m_pPlayer->Shot();
 		switch (wParam)
 		{
+		case VK_LCONTROL:
+			m_pPlayer->Shot();
+			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
 		case VK_RETURN:
 			break;
-		default:
-			if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-			break;
+		//default:
+		//	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+		//	break;
 		}
 		break;
 	default:
@@ -157,6 +164,8 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
+		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+		break;
 	case WM_KEYUP:
 		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
@@ -179,7 +188,7 @@ void CGameFramework::ProcessInput()
 		if (pKeyBuffer[VK_RIGHT] & 0xF0)dwDirection |= DIR_RIGHT;
 		if (pKeyBuffer[VK_PRIOR] & 0xF0)dwDirection |= DIR_UP;
 		if (pKeyBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
-		if (pKeyBuffer[VK_LCONTROL] & 0xF0) m_pPlayer->Shot();
+		//if (pKeyBuffer[VK_LCONTROL] & 0xF0) m_pPlayer->Shot();
 		//키 입력이 있으면 플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
 		if (dwDirection) m_pPlayer->Move(dwDirection, 0.15f);
 	}
@@ -205,9 +214,8 @@ void CGameFramework::ProcessInput()
 		//마우스 커서의 위치를 마우스가 눌려졌던 위치로 설정한다. 
 		::SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 		if (pKeyBuffer[VK_RBUTTON] & 0xF0)
-			if (m_pScene->isClickObject(ptCursorPos.x - rc.left-8, ptCursorPos.y - rc.left -33)) {
-				
-			}
+			m_pScene->isClickObject(ptCursorPos.x - rc.left - 8, ptCursorPos.y - rc.left - 33);
+
 		if (cxMouseDelta || cyMouseDelta)
 		{
 			//마우스 이동이 있으면 플레이어를 회전한다.

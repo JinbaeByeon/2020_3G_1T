@@ -134,7 +134,7 @@ CMap::CMap()
 CGun::CGun()
 {
 	m_ppBullets = new CBullet * [1000];
-	m_fMovingSpeed = 40.f;
+	m_fMovingSpeed = 60.f;
 }
 
 void CGun::Shot()
@@ -147,6 +147,11 @@ void CGun::Shot()
 	m_ppBullets[m_nBullets]->SetMovingSpeed(m_fMovingSpeed);
 	m_ppBullets[m_nBullets]->SetRotationSpeed(100.f);
 	m_ppBullets[m_nBullets]->SetRotationAxis(m_xmf3RotationAxis);
+	if (m_bTarget) {
+		m_ppBullets[m_nBullets]->SetTarget(m_pTarget);
+		m_bTarget = false;
+		m_pTarget = NULL;
+	}
 	++m_nBullets;
 }
 
@@ -161,7 +166,7 @@ void CGun::Animate(float fElapsedTime)
 {
 	for (int i = 0; i < m_nBullets; ++i) {
 		m_ppBullets[i]->Animate(fElapsedTime);
-		if (m_ppBullets[i]->time >= 5) {
+		if (m_ppBullets[i]->m_time >= 5) {
 			DeleteBullet(i);
 		}
 	}
@@ -180,11 +185,34 @@ bool CGun::bCollisionBullets(BoundingBox& xmbbWorld)
 
 }
 
+void CGun::CheckBulletsInMap(BoundingBox& xmbbMap)
+{
+	for (int i = 0; i < m_nBullets; ++i) {
+		if (xmbbMap.Contains(m_ppBullets[i]->XMBBWorld()) != DirectX::CONTAINS) {
+			DeleteBullet(i);
+		}
+	}
+	
+}
+
 void CGun::DeleteBullet(const int& idx)
 {
 	for (int i = idx; i < m_nBullets - 1; ++i)
 		m_ppBullets[i] = m_ppBullets[i + 1];
 	--m_nBullets;
+}
+
+void CGun::SetTarget(CGameObject* pObject )
+{
+	m_pTarget = pObject;
+	m_bTarget = true;
+}
+
+void CGun::Update(float fTimeElapsed)
+{
+	for (int i = 0; i < m_nBullets; ++i)
+		if (m_ppBullets[i]->m_bTarget)
+			m_ppBullets[i]->Update(fTimeElapsed);
 }
 
 ///////////////////
@@ -198,19 +226,29 @@ void CGun::DeleteBullet(const int& idx)
 void CBullet::Animate(float fElapsedTime)
 {
 	CGameObject::Animate(fElapsedTime);
-	time += fElapsedTime;
+	m_time += fElapsedTime;
 }
 
-void CBullet::SetTarget(XMFLOAT3& xmf3PosT)
+void CBullet::SetTarget(CGameObject* pObject )
 {
-	XMFLOAT3 xmf3PosB = { m_xmf4x4World._41,m_xmf4x4World._42,m_xmf4x4World._43 };
-
-	m_xmf3MovingDirection = XMFLOAT3{ xmf3PosT.x - xmf3PosB.x,xmf3PosT.y - xmf3PosB.y,xmf3PosT.z - xmf3PosB.z };
+	m_pTarget = pObject;
+	m_bTarget = true;
 }
-void CBullet::SetTarget(float x, float y, float z)
+
+void CBullet::Update(float fTimeElapsed)
 {
+	XMVECTOR xmvPosition = XMLoadFloat3(&XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43));
+	XMVECTOR xmvTargetDir = XMLoadFloat3(&XMFLOAT3(m_pTarget->m_xmf4x4World._41, m_pTarget->m_xmf4x4World._42, m_pTarget->m_xmf4x4World._43));
+	
+	xmvTargetDir = XMVector3Normalize(XMVectorSubtract(xmvTargetDir, xmvPosition));
+	XMVECTOR xmvDir = XMVector3Normalize(XMLoadFloat3(&m_xmf3MovingDirection));
 
+	XMVECTOR xmvUp = XMVector3Normalize(XMVector3Cross(xmvDir, xmvTargetDir));
+	float fAngle = XMVectorGetX(XMVector3AngleBetweenNormals(xmvDir, xmvTargetDir));
+	fAngle *= fTimeElapsed * 8.0f;
+	XMStoreFloat3(&m_xmf3MovingDirection, XMVector3Transform(xmvDir, XMMatrixRotationAxis(xmvUp, fAngle)));
 }
+
 ///////////////////////
 /*		CBullet		 */
 ///////////////////////
