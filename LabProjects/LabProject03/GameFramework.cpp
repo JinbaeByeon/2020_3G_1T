@@ -188,7 +188,7 @@ void CGameFramework::ProcessInput()
 		if (pKeyBuffer[VK_RIGHT] & 0xF0)dwDirection |= DIR_RIGHT;
 		if (pKeyBuffer[VK_PRIOR] & 0xF0)dwDirection |= DIR_UP;
 		if (pKeyBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
-		//if (pKeyBuffer[VK_LCONTROL] & 0xF0) m_pPlayer->Shot();
+		
 		//키 입력이 있으면 플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다).
 		if (dwDirection) m_pPlayer->Move(dwDirection, 0.15f);
 	}
@@ -214,7 +214,7 @@ void CGameFramework::ProcessInput()
 		//마우스 커서의 위치를 마우스가 눌려졌던 위치로 설정한다. 
 		::SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 		if (pKeyBuffer[VK_RBUTTON] & 0xF0)
-			m_pScene->isClickObject(ptCursorPos.x - rc.left - 8, ptCursorPos.y - rc.left - 33);
+			m_pScene->Picking(ptCursorPos.x - rc.left - 8, ptCursorPos.y - rc.left - 33);
 
 		if (cxMouseDelta || cyMouseDelta)
 		{
@@ -228,6 +228,7 @@ void CGameFramework::ProcessInput()
 		}
 	}
 	//플레이어를 실제로 이동하고 카메라를 갱신한다. 마찰력의 영향을 속도 벡터에 적용한다.
+	m_pScene->Update(m_GameTimer.GetTimeElapsed());
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 

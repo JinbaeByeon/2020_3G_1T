@@ -9,12 +9,17 @@ CScene::~CScene()
 
 void CScene::BuildObjects()
 {
-	CCubeMesh* pCubeMesh = new CCubeMesh(4.0f, 4.0f, 4.0f);
+	CCubeMesh* pCubeMesh = new CCubeMesh(Cube::xSize, Cube::ySize, Cube::zSize);
 
-	m_nObjects = 5;
+	m_nObjects = 10;
 	m_ppObjects = new CGameObject * [m_nObjects];
 
-	m_ppObjects[0] = new CGameObject();
+	for (int i = 0; i < m_nObjects; ++i) {
+		m_ppObjects[i] = new CGameObject();
+		m_ppObjects[i]->Reset();
+	}
+
+	/*m_ppObjects[0] = new CGameObject();
 	m_ppObjects[0]->SetMesh(pCubeMesh);
 	m_ppObjects[0]->SetColor(RGB(255, 0, 0));
 	m_ppObjects[0]->SetPosition(-13.5f, 0.0f, +14.0f);
@@ -56,7 +61,7 @@ void CScene::BuildObjects()
 	m_ppObjects[4]->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 1.0f));
 	m_ppObjects[4]->SetRotationSpeed(50.06f);
 	m_ppObjects[4]->SetMovingDirection(XMFLOAT3(0.0f, 1.0f, 1.0f));
-	m_ppObjects[4]->SetMovingSpeed(0.0f);
+	m_ppObjects[4]->SetMovingSpeed(0.0f);*/
 
 	m_pMap = new CMap();
 }
@@ -72,13 +77,7 @@ void CScene::ReleaseObjects()
 void CScene::Animate(float fElapsedTime)
 {
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fElapsedTime);
-	CheckCollision();
-	if (m_pPlayer->m_xmf3Position.z <= -20.f || m_pPlayer->m_xmf3Position.z >= 20.f) {
-		for (int i = 0; i < m_nObjects; ++i)
-			m_ppObjects[i]->Move(0, 0, -m_pPlayer->m_xmf3Position.z);
-		m_pPlayer->m_pCamera->Move(XMFLOAT3(0, 0, -m_pPlayer->m_xmf3Position.z));
-		m_pPlayer->m_xmf3Position.z = 0;
-	}
+
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
@@ -94,23 +93,49 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	m_pMap->Render(hDCFrameBuffer, pCamera);
 }
 
+void CScene::Update(float fTimeElapsed)
+{
+	if (m_pPlayer->m_xmf3Position.z <= -20.f || m_pPlayer->m_xmf3Position.z >= 20.f) {
+		for (int i = 0; i < m_nObjects; ++i)
+			m_ppObjects[i]->Move(0, 0, -m_pPlayer->m_xmf3Position.z);
+		m_pPlayer->m_pCamera->Move(XMFLOAT3(0, 0, -m_pPlayer->m_xmf3Position.z));
+		m_pPlayer->m_pGun->Move(0, 0, -m_pPlayer->m_xmf3Position.z);
+		m_pPlayer->m_xmf3Position.z = 0;
+	}
+	CheckCollision();
+	for (int i = 0; i < m_nObjects; ++i) {
+		if (m_ppObjects[i]->m_bCollision) {
+			m_ppObjects[i]->Explode(fTimeElapsed);
+		}
+	}
+}
+
 void CScene::CheckCollision()
 {
-	//¸Ê Ãæµ¹°Ë»ç
+	//¸Ê<->ÇÃ·¹ÀÌ¾î Ãæµ¹°Ë»ç
 	if (!m_pPlayer->IsInMap(m_pMap->m_pMesh->m_xmBoundingBox)) {
 		m_pPlayer->m_pCamera->Move(-m_pPlayer->m_xmf3Position.x, -m_pPlayer->m_xmf3Position.y, -m_pPlayer->m_xmf3Position.z);
 		m_pPlayer->SetPosition(0, 0, 0);
 	}
+	//¸Ê<->ÃÑ¾Ë Ãæµ¹°Ë»ç
 	m_pPlayer->m_pGun->CheckBulletsInMap(m_pMap->m_pMesh->m_xmBoundingBox);
-	// °´Ã¼ Ãæµ¹°Ë»ç
-	for (int i = 0; i < m_nObjects; ++i)
-		if (m_pPlayer->m_pGun->bCollisionBullets(m_ppObjects[i]->XMBBWorld()))
-			;
 
 
+	for (int i = 0; i < m_nObjects; ++i) {
+		//°´Ã¼<->ÃÑ¾Ë Ãæµ¹°Ë»ç
+		if (!m_ppObjects[i]->m_bCollision && m_pPlayer->m_pGun->bCollisionBullets(m_ppObjects[i]->XMBBWorld())) {
+			m_pPlayer->m_pGun->DeleteTarget(m_ppObjects[i]);
+			m_ppObjects[i]->m_bCollision = true;
+		}
+		//°´Ã¼<->¸Ê Ãæµ¹°Ë»ç
+		if (!m_ppObjects[i]->IsInMap(m_pMap->m_pMesh->m_xmBoundingBox)) {
+			m_pPlayer->m_pGun->DeleteTarget(m_ppObjects[i]);
+			m_ppObjects[i]->Reset();
+		}
+	}
 }
 
-bool CScene::isClickObject(int xMouse, int yMouse)
+void CScene::Picking(int xMouse, int yMouse)
 {
 	int fLeft = m_pPlayer->m_pCamera->m_Viewport.m_nLeft;
 	int fTop = m_pPlayer->m_pCamera->m_Viewport.m_nTop;
@@ -130,11 +155,9 @@ bool CScene::isClickObject(int xMouse, int yMouse)
 	int idx = -1;
 	BoundingBox xmbbWorld;
 	for (int i = 0; i < m_nObjects; ++i) {
-		xmbbWorld = m_ppObjects[i]->XMBBWorld();
-		//xmv3LayWorld = XMLoadFloat3(&XMFLOAT3(m_ppObjects[i]->m_xmf4x4World._41, m_ppObjects[i]->m_xmf4x4World._42, m_ppObjects[i]->m_xmf4x4World._43));
-		//xmv3LayWorld = XMVector3Normalize(XMVectorSubtract(xmv3LayWorld, xmv3origin));
-		
-		if (xmbbWorld.Intersects(xmv3origin, xmv3LayWorld, fDist)) {
+		xmbbWorld = m_ppObjects[i]->XMBBWorld();	
+
+		if (!m_ppObjects[i]->m_bCollision && xmbbWorld.Intersects(xmv3origin, xmv3LayWorld, fDist)) {
 			if (fDistNear == -1 || fDist < fDistNear) {
 				fDistNear = fDist;
 				idx = i;
@@ -143,7 +166,5 @@ bool CScene::isClickObject(int xMouse, int yMouse)
 	}
 	if (idx != -1) {
 		m_pPlayer->m_pGun->SetTarget(m_ppObjects[idx]);
-		return true;
 	}
-	return false;
 }

@@ -55,7 +55,8 @@ void CPlayer::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 	if (bUpdateVelocity)
 	{
 		//플레이어의 속도 벡터를 xmf3Shift 벡터만큼 변경한다.
-		XMStoreFloat3(&m_xmf3Velocity, XMVectorAdd(XMLoadFloat3(&m_xmf3Velocity), XMLoadFloat3(&xmf3Shift)));
+		if (XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_xmf3Velocity))) < 4)
+			XMStoreFloat3(&m_xmf3Velocity, XMVectorAdd(XMLoadFloat3(&m_xmf3Velocity), XMLoadFloat3(&xmf3Shift)));
 	}
 	else
 	{
@@ -141,9 +142,9 @@ void CPlayer::Update(float fTimeElapsed)
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	XMStoreFloat3(&m_xmf3Velocity, XMVectorAdd(xmvVelocity, XMVectorScale(xmvDeceleration, fDeceleration)));
 
-	m_pGun->m_xmf4x4World._41 = m_xmf3Position.x;
-	m_pGun->m_xmf4x4World._42 = m_xmf3Position.y;
-	m_pGun->m_xmf4x4World._43 = m_xmf3Position.z;
+	
+	XMMATRIX xmmtxWorld = XMMatrixTranslation(0, 5, 0);
+	XMStoreFloat4x4(&m_pGun->m_xmf4x4World, XMMatrixMultiply(xmmtxWorld, XMLoadFloat4x4(&m_xmf4x4World)));
 	m_pGun->SetMovingDirection(m_xmf3Look);
 	m_pGun->SetRotationAxis(m_xmf3Look);
 	m_pGun->Update(fTimeElapsed);
@@ -193,18 +194,4 @@ void CPlayer::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 		m_pGun->Render(hDCFrameBuffer, pCamera);
 }
 
-bool CPlayer::IsInMap(BoundingBox& xmbbMap)
-{
-	BoundingBox xmbbWorld = m_pMesh->m_xmBoundingBox;
-	xmbbWorld.Transform(xmbbWorld, XMLoadFloat4x4(&m_xmf4x4World));
 
-	return (xmbbMap.Contains(xmbbWorld) == DirectX::CONTAINS);
-}
-
-
-void CPlayer::SetTarget(float xMouse, float yMouse)
-{
-	XMVECTOR xmv3LayMouse = XMLoadFloat3(&XMFLOAT3(xMouse, yMouse, 1));
-	XMMATRIX xmmtxInversViewProject = XMMatrixInverse(NULL, XMLoadFloat4x4(&m_pCamera->m_xmf4x4ViewProject));
-	xmv3LayMouse = XMVector3TransformCoord(xmv3LayMouse, xmmtxInversViewProject);
-}

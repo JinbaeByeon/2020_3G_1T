@@ -24,9 +24,9 @@ public:
 
 	//플레이어의 이동 속도를 나타내는 벡터이다.
 	XMFLOAT3		m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
+	
 	//플레이어에 작용하는 마찰력을 나타낸다.
-	float			m_fFriction = 125.0f;
+	float			m_fFriction = 1.5f;
 
 	//플레이어가 로컬 x-축(Right), y-축(Up), z-축(Look)으로 얼마만큼 회전했는가를 나타낸다. 
 	float			m_fPitch = 0.0f;
@@ -66,8 +66,6 @@ public:
 	void Shot();
 	void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 
-	bool IsInMap(BoundingBox& xmbbMap);
-	void SetTarget(float xMouse, float yMouse);
 };
 
 class CAirplanePlayer : public CPlayer

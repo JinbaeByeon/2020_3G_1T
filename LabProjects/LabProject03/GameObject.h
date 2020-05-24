@@ -11,6 +11,9 @@ public:
 
 public:
 	bool			m_bActive = true;
+	bool			m_bCollision = false;
+	CGameObject**	m_ppFragments = NULL;
+	float			m_time = 0;
 
 	XMFLOAT4X4		m_xmf4x4World = Matrix4x4::Identity();
 
@@ -25,8 +28,6 @@ public:
 	XMFLOAT3		m_xmf3RotationAxis = XMFLOAT3(0.f, 1.f, 0.f);
 	float			m_fRotationSpeed = 0.0f;
 	
-	XMFLOAT3		m_xmf3SizeBox;
-
 
 public:
 	void SetMesh(CMesh *pMesh) { m_pMesh = pMesh; if (pMesh) pMesh->AddRef(); }
@@ -53,9 +54,14 @@ public:
 	bool IsVisible(CCamera* pCamera);
 	BoundingBox& XMBBWorld();
 	BoundingBox XMBBWorld() const;
+	bool IsInMap(BoundingBox& xmbbMap);
+
 	virtual void OnUpdateTransform() { }
 	virtual void Animate(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
+
+	void Reset();
+	void Explode(float fTimeElapsed);
 };
 
 class CMap : public CGameObject {
@@ -64,11 +70,9 @@ public:
 };
 
 class CBullet : public CGameObject { 
-private:
-	CGameObject* m_pTarget = NULL;
 public:
+	CGameObject* m_pTarget = NULL;
 	bool m_bTarget = false;
-	float m_time = 0;
 public:
 	CBullet() {};
 	void Animate(float fElapsedTime);
@@ -80,8 +84,9 @@ class CGun : public CGameObject {
 private:
 	CBullet** m_ppBullets = NULL;
 	int m_nBullets = 0;
-	CGameObject* m_pTarget = NULL;
 	bool m_bTarget = false;
+public:
+	CGameObject* m_pTarget = NULL;
 public:
 	CGun();
 	void Shot();
@@ -92,4 +97,7 @@ public:
 	void DeleteBullet(const int& idx);
 	void SetTarget(CGameObject* pObject);
 	void Update(float fTimeElapsed);
+	void DeleteTarget(CGameObject* pObject);
+
+	void Move(float x, float y, float z);
 };

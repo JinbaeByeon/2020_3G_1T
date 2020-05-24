@@ -57,3 +57,10 @@ namespace Matrix4x4
 		return(xmmtx4x4Result);
 	}
 }
+
+namespace Cube
+{
+	const float xSize = 4.f;
+	const float ySize = 4.f;
+	const float zSize = 4.f;
+}

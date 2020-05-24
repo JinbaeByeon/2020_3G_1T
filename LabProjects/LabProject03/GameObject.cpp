@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "GameObject.h"
 #include "GraphicsPipeline.h"
-
-
+#include <random>
 
 //////////////////////////
 /*		CGameObject		*/
@@ -69,22 +68,34 @@ void CGameObject::Move(float x, float y, float z)
 
 void CGameObject::Animate(float fElapsedTime)
 {
-	if (m_fRotationSpeed != 0.0f) Rotate(m_xmf3RotationAxis,
-		m_fRotationSpeed * fElapsedTime);
-	if (m_fMovingSpeed != 0.0f) Move(m_xmf3MovingDirection,
-		m_fMovingSpeed * fElapsedTime);
+	if (m_bCollision) {
+		for (int i = 0; i < 100; ++i)
+			m_ppFragments[i]->Animate(fElapsedTime);
+	}
+	else {
+		if (m_fRotationSpeed != 0.0f) Rotate(m_xmf3RotationAxis,
+			m_fRotationSpeed * fElapsedTime);
+		if (m_fMovingSpeed != 0.0f) Move(m_xmf3MovingDirection,
+			m_fMovingSpeed * fElapsedTime);
+	}
 }
 
 void CGameObject::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 {
-	if (m_pMesh)
-	{
-		CGraphicsPipeline::SetWorldTransform(&m_xmf4x4World);
-		HPEN hPen = ::CreatePen(PS_SOLID, 0, m_dwColor);
-		HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
-		m_pMesh->Render(hDCFrameBuffer);
-		::SelectObject(hDCFrameBuffer, hOldPen);
-		::DeleteObject(hPen);
+	if (m_bCollision) {
+		for (int i = 0; i < 100; ++i)
+			m_ppFragments[i]->Render(hDCFrameBuffer,pCamera);
+	}
+	else {
+		if (m_pMesh)
+		{
+			CGraphicsPipeline::SetWorldTransform(&m_xmf4x4World);
+			HPEN hPen = ::CreatePen(PS_SOLID, 0, m_dwColor);
+			HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
+			m_pMesh->Render(hDCFrameBuffer);
+			::SelectObject(hDCFrameBuffer, hOldPen);
+			::DeleteObject(hPen);
+		}
 	}
 }
 
@@ -107,6 +118,69 @@ BoundingBox CGameObject::XMBBWorld() const
 	BoundingBox xmbbModel = m_pMesh->m_xmBoundingBox;
 	xmbbModel.Transform(xmbbModel, XMLoadFloat4x4(&m_xmf4x4World));
 	return xmbbModel;
+}
+
+bool CGameObject::IsInMap(BoundingBox& xmbbMap)
+{
+	BoundingBox xmbbWorld = m_pMesh->m_xmBoundingBox;
+	xmbbWorld.Transform(xmbbWorld, XMLoadFloat4x4(&m_xmf4x4World));
+
+	return (xmbbMap.Contains(xmbbWorld) == DirectX::CONTAINS);
+}
+
+void CGameObject::Reset()
+{
+	if (!m_pMesh)
+		SetMesh(new CCubeMesh());
+	m_bActive = true;
+	m_bCollision = false;
+	if (m_ppFragments)
+		delete[] m_ppFragments;
+	m_ppFragments = NULL;
+	m_time = 0;
+
+	std::random_device rd;
+	std::default_random_engine dre{rd()};
+	std::uniform_real_distribution<float> urdFnormal(-1, 1);
+	std::uniform_int_distribution<int> urd255(0, 255);
+	std::uniform_int_distribution<int> urdPosX(-30, 30);
+	std::uniform_int_distribution<int> urdPosY(-30, 30);
+	std::uniform_int_distribution<int> urdPosZ(-200, 200);
+
+	m_xmf4x4World = Matrix4x4::Identity();
+	SetPosition(urdPosX(dre), urdPosY(dre), urdPosZ(dre));
+	m_dwColor = RGB(urd255(dre) * (urd255(dre) % 2), urd255(dre) * (urd255(dre) % 2), urd255(dre) * (urd255(dre) % 2));
+
+	m_xmf3MovingDirection = XMFLOAT3(urdFnormal(dre), urdFnormal(dre), urdFnormal(dre));
+	m_fMovingSpeed = 5 + urd255(dre) % 20;
+
+	m_xmf3RotationAxis = XMFLOAT3(urdFnormal(dre), urdFnormal(dre), urdFnormal(dre));
+	m_fRotationSpeed = 10 + urd255(dre) % 100;
+}
+
+void CGameObject::Explode(float fTimeElapsed)
+{
+	if (m_ppFragments == NULL) {
+		std::default_random_engine dre{};
+		std::uniform_real_distribution<float> urdFloat(-1, 1);
+		XMFLOAT3 xmf3Rand;
+		m_ppFragments = new CGameObject * [100];
+		for (int j = 0; j < 100; ++j) {
+			xmf3Rand = { urdFloat(dre), urdFloat(dre), urdFloat(dre) };
+			m_ppFragments[j] = new CGameObject();
+			m_ppFragments[j]->SetMesh(new CCubeMesh(0.5f, 0.5f, 0.5f));
+			m_ppFragments[j]->m_xmf4x4World = m_xmf4x4World;
+			m_ppFragments[j]->SetColor(m_dwColor);
+			m_ppFragments[j]->SetMovingSpeed(10.f);
+			m_ppFragments[j]->SetMovingDirection(xmf3Rand);
+			m_ppFragments[j]->SetRotationAxis(xmf3Rand);
+			m_ppFragments[j]->SetRotationSpeed(50.f);
+		}
+	}
+	m_time += fTimeElapsed;
+	if (m_time >= 1) {
+		Reset();
+	}
 }
 
 //////////////////////////
@@ -134,7 +208,7 @@ CMap::CMap()
 CGun::CGun()
 {
 	m_ppBullets = new CBullet * [1000];
-	m_fMovingSpeed = 60.f;
+	m_fMovingSpeed = 100.f;
 }
 
 void CGun::Shot()
@@ -197,22 +271,40 @@ void CGun::CheckBulletsInMap(BoundingBox& xmbbMap)
 
 void CGun::DeleteBullet(const int& idx)
 {
-	for (int i = idx; i < m_nBullets - 1; ++i)
+	for (int i = idx; i < m_nBullets - 1; ++i) {
+		m_ppBullets[i] = NULL;
 		m_ppBullets[i] = m_ppBullets[i + 1];
+	}
 	--m_nBullets;
 }
 
-void CGun::SetTarget(CGameObject* pObject )
+void CGun::SetTarget(CGameObject* pObject)
 {
 	m_pTarget = pObject;
 	m_bTarget = true;
+}
+void CGun::DeleteTarget(CGameObject* pObject)
+{
+	if (m_pTarget == pObject) {
+		m_pTarget = NULL;
+		m_bTarget = false;
+	}
+	for (int i = 0; i < m_nBullets; ++i)
+		if (m_ppBullets[i]->m_bTarget && m_ppBullets[i]->m_pTarget == pObject)
+			m_ppBullets[i]->SetTarget(NULL);
 }
 
 void CGun::Update(float fTimeElapsed)
 {
 	for (int i = 0; i < m_nBullets; ++i)
-		if (m_ppBullets[i]->m_bTarget)
+		if (m_ppBullets[i]->m_bTarget && m_ppBullets[i]->m_time >= 0.2)
 			m_ppBullets[i]->Update(fTimeElapsed);
+}
+
+void CGun::Move(float x, float y, float z)
+{
+	for (int i = 0; i < m_nBullets; ++i)
+		m_ppBullets[i]->Move(x, y, z);
 }
 
 ///////////////////
@@ -229,10 +321,17 @@ void CBullet::Animate(float fElapsedTime)
 	m_time += fElapsedTime;
 }
 
-void CBullet::SetTarget(CGameObject* pObject )
+void CBullet::SetTarget(CGameObject* pObject)
 {
-	m_pTarget = pObject;
-	m_bTarget = true;
+	if (pObject == NULL) {
+		m_pTarget = NULL;
+		m_bTarget = false;
+	}
+	else {
+		m_pTarget = pObject;
+		m_bTarget = true;
+		SetColor(RGB(0, 0, 255));
+	}
 }
 
 void CBullet::Update(float fTimeElapsed)
@@ -245,7 +344,7 @@ void CBullet::Update(float fTimeElapsed)
 
 	XMVECTOR xmvUp = XMVector3Normalize(XMVector3Cross(xmvDir, xmvTargetDir));
 	float fAngle = XMVectorGetX(XMVector3AngleBetweenNormals(xmvDir, xmvTargetDir));
-	fAngle *= fTimeElapsed * 8.0f;
+	fAngle *= fTimeElapsed * m_fMovingSpeed / 10;
 	XMStoreFloat3(&m_xmf3MovingDirection, XMVector3Transform(xmvDir, XMMatrixRotationAxis(xmvUp, fAngle)));
 }
 
