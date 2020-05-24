@@ -46,6 +46,8 @@ public:
 	//카메라 변환 행렬 * 원근 투영 변환 행렬
 	XMFLOAT4X4			m_xmf4x4ViewProject = Matrix4x4::Identity();
 
+	XMFLOAT4X4			m_xmf4x4Screen = Matrix4x4::Identity();
+
 	CViewport			m_Viewport;
 
 	BoundingFrustum m_xmFrustum;
@@ -57,9 +59,11 @@ public:
 	void GeneratePerspectiveProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fFOVAngle);
 	
 	void SetPosition(float x, float y, float z) { m_xmf4x4View._41 = x; m_xmf4x4View._42 = y; m_xmf4x4View._43 = z;}
-
+	XMFLOAT3 GetPosition() { return m_xmf3Position; }
 	void SetViewport(int xStart, int yStart, int nWidth, int nHeight);
 	void SetFOVAngle(float fFOVAngle);
+	
+	void SetScreenTransform();
 
 	void GenerateFrustum();
 	bool IsInFrustum(BoundingBox& xmbbWorld);

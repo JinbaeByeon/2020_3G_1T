@@ -51,7 +51,8 @@ public:
 	void Rotate(const XMFLOAT3& xmf3Axis, float fAngle);
 
 	bool IsVisible(CCamera* pCamera);
-	
+	BoundingBox& XMBBWorld();
+	BoundingBox XMBBWorld() const;
 	virtual void OnUpdateTransform() { }
 	virtual void Animate(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
@@ -68,6 +69,9 @@ public:
 	float time = 0;
 	CBullet() {};
 	void Animate(float fElapsedTime);
+
+	void SetTarget(XMFLOAT3& xmf3position);
+	void SetTarget(float x, float y,float z);
 };
 
 class CGun : public CGameObject {
@@ -79,4 +83,6 @@ public:
 	void Shot();
 	void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 	void Animate(float fElapsedTime);
+	bool bCollisionBullets(BoundingBox& xmbbWolrd);
+	void DeleteBullet(const int& idx);
 };

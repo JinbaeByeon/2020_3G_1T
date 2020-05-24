@@ -67,6 +67,7 @@ public:
 	void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 
 	bool IsInMap(BoundingBox& xmbbMap);
+	void SetTarget(float xMouse, float yMouse);
 };
 
 class CAirplanePlayer : public CPlayer

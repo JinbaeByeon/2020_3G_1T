@@ -2,6 +2,11 @@
 #include "GameObject.h"
 #include "GraphicsPipeline.h"
 
+
+
+//////////////////////////
+/*		CGameObject		*/
+//////////////////////////
 CGameObject::~CGameObject()
 {
 	if (m_pMesh) m_pMesh->Release();
@@ -85,19 +90,47 @@ void CGameObject::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 
 bool CGameObject::IsVisible(CCamera* pCamera)
 {
-	BoundingBox xmbbModel = m_pMesh->m_xmBoundingBox;
-	xmbbModel.Transform(xmbbModel, XMLoadFloat4x4(&m_xmf4x4World));
-	bool bIsVisible = pCamera->IsInFrustum(xmbbModel);
+	bool bIsVisible = pCamera->IsInFrustum(XMBBWorld());
 	
 	return bIsVisible;
 }
 
+BoundingBox& CGameObject::XMBBWorld()
+{
+	BoundingBox xmbbModel = m_pMesh->m_xmBoundingBox;
+	xmbbModel.Transform(xmbbModel, XMLoadFloat4x4(&m_xmf4x4World));
+	return xmbbModel;
+}
+
+BoundingBox CGameObject::XMBBWorld() const
+{
+	BoundingBox xmbbModel = m_pMesh->m_xmBoundingBox;
+	xmbbModel.Transform(xmbbModel, XMLoadFloat4x4(&m_xmf4x4World));
+	return xmbbModel;
+}
+
+//////////////////////////
+/*		CGameObject		*/
+//////////////////////////
+
+
+
+//////////////////////
+/*		CMap		*/
+//////////////////////
 CMap::CMap()
 {
 	SetMesh(new CMapMesh());
 	SetColor(RGB(0, 0, 0));
 }
+//////////////////////
+/*		CMap		*/
+//////////////////////
 
+
+///////////////////
+/*		CGun	 */
+///////////////////
 CGun::CGun()
 {
 	m_ppBullets = new CBullet * [1000];
@@ -128,16 +161,56 @@ void CGun::Animate(float fElapsedTime)
 {
 	for (int i = 0; i < m_nBullets; ++i) {
 		m_ppBullets[i]->Animate(fElapsedTime);
-		if (m_ppBullets[i]->time >= 2) {
-			for (int j = i; j < m_nBullets - 1; ++j)
-				m_ppBullets[j] = m_ppBullets[j + 1];
-			--m_nBullets;
+		if (m_ppBullets[i]->time >= 5) {
+			DeleteBullet(i);
 		}
 	}
 
 }
+
+bool CGun::bCollisionBullets(BoundingBox& xmbbWorld)
+{
+	for (int i = 0; i < m_nBullets; ++i) {
+		if (m_ppBullets[i]->XMBBWorld().Contains(xmbbWorld) != DirectX::DISJOINT) {
+			DeleteBullet(i);
+			return true;
+		}
+	}
+	return false;
+
+}
+
+void CGun::DeleteBullet(const int& idx)
+{
+	for (int i = idx; i < m_nBullets - 1; ++i)
+		m_ppBullets[i] = m_ppBullets[i + 1];
+	--m_nBullets;
+}
+
+///////////////////
+/*		CGun	 */
+///////////////////
+
+
+///////////////////////
+/*		CBullet		 */
+///////////////////////
 void CBullet::Animate(float fElapsedTime)
 {
 	CGameObject::Animate(fElapsedTime);
 	time += fElapsedTime;
 }
+
+void CBullet::SetTarget(XMFLOAT3& xmf3PosT)
+{
+	XMFLOAT3 xmf3PosB = { m_xmf4x4World._41,m_xmf4x4World._42,m_xmf4x4World._43 };
+
+	m_xmf3MovingDirection = XMFLOAT3{ xmf3PosT.x - xmf3PosB.x,xmf3PosT.y - xmf3PosB.y,xmf3PosT.z - xmf3PosB.z };
+}
+void CBullet::SetTarget(float x, float y, float z)
+{
+
+}
+///////////////////////
+/*		CBullet		 */
+///////////////////////

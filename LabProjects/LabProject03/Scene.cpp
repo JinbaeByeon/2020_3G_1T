@@ -103,6 +103,44 @@ void CScene::CheckCollision()
 	}
 
 	// 객체 충돌검사
-	for (int i = 0; i < m_nObjects; ++i);
+	for (int i = 0; i < m_nObjects; ++i)
+		if (m_pPlayer->m_pGun->bCollisionBullets(m_ppObjects[i]->XMBBWorld()))
+			;
 		
+}
+
+bool CScene::isClickObject(int xMouse, int yMouse)
+{
+	int fLeft = m_pPlayer->m_pCamera->m_Viewport.m_nLeft;
+	int fTop = m_pPlayer->m_pCamera->m_Viewport.m_nTop;
+	int fHeight = m_pPlayer->m_pCamera->m_Viewport.m_nHeight;
+	int fWidth = m_pPlayer->m_pCamera->m_Viewport.m_nWidth;
+	
+	float x = ((2.0f * (xMouse - fLeft)) / fWidth) - 1;
+	float y = (-(2.0f * (yMouse - fTop)) / fHeight) + 1;
+	XMVECTOR xmv3LayView = { x / m_pPlayer->m_pCamera->m_xmf4x4Project._11,y / m_pPlayer->m_pCamera->m_xmf4x4Project._22 ,1 };
+	XMMATRIX xmmtxInversView = XMMatrixInverse(NULL, XMLoadFloat4x4(&m_pPlayer->m_pCamera->m_xmf4x4View));	
+	XMVECTOR xmv3LayWorld = XMVector3TransformCoord(xmv3LayView, xmmtxInversView);
+
+	XMVECTOR xmv3origin{ XMLoadFloat3(&m_pPlayer->m_pCamera->GetPosition()) };
+	xmv3LayWorld = XMVectorSubtract(xmv3LayWorld, xmv3origin);
+
+	float fDist, fDistNear = -1;
+	int idx = -1;
+	BoundingBox xmbbWorld;
+	for (int i = 0; i < m_nObjects; ++i) {
+		xmbbWorld = m_ppObjects[i]->XMBBWorld();
+		//xmv3LayWorld = XMLoadFloat3(&XMFLOAT3(m_ppObjects[i]->m_xmf4x4World._41, m_ppObjects[i]->m_xmf4x4World._42, m_ppObjects[i]->m_xmf4x4World._43));
+		//xmv3LayWorld = XMVector3Normalize(XMVectorSubtract(xmv3LayWorld, xmv3origin));
+		
+		if (xmbbWorld.Intersects(xmv3origin, xmv3LayWorld, fDist)) {
+			if (fDistNear == -1 || fDist < fDistNear) {
+				fDistNear = fDist;
+				idx = i;
+			}
+		}
+	}
+	if (idx != -1)
+		return true;
+	return false;
 }

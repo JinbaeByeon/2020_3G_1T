@@ -24,6 +24,8 @@ void CCamera::SetViewport(int nLeft, int nTop, int nWidth, int nHeight)
 {
 	m_Viewport.SetViewport(nLeft, nTop, nWidth, nHeight);
 	m_fAspectRatio = float(m_Viewport.m_nWidth) / float(m_Viewport.m_nHeight);
+
+	SetScreenTransform();
 }
 
 void CCamera::SetFOVAngle(float fFOVAngle)
@@ -164,4 +166,16 @@ void CCamera::GenerateFrustum()
 bool CCamera::IsInFrustum(BoundingBox& xmbbWorld)
 {
 	return(m_xmFrustum.Contains(xmbbWorld) != DirectX::DISJOINT);
+}
+
+void CCamera::SetScreenTransform() {
+	float fHalfWidth = m_Viewport.m_nWidth * 0.5f;
+	float fHalfHeight = m_Viewport.m_nHeight * 0.5f;
+
+	m_xmf4x4Screen = {
+		fHalfWidth,						 0,									0, 0,
+		0,								 -fHalfHeight,						0, 0,
+		0,								 0,									1, 0,
+		m_Viewport.m_nLeft + fHalfWidth, m_Viewport.m_nTop + fHalfHeight,	0, 1
+	};
 }

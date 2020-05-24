@@ -199,3 +199,11 @@ bool CPlayer::IsInMap(BoundingBox& xmbbMap)
 
 	return (xmbbMap.Contains(xmbbWorld) == DirectX::CONTAINS);
 }
+
+
+void CPlayer::SetTarget(float xMouse, float yMouse)
+{
+	XMVECTOR xmv3LayMouse = XMLoadFloat3(&XMFLOAT3(xMouse, yMouse, 1));
+	XMMATRIX xmmtxInversViewProject = XMMatrixInverse(NULL, XMLoadFloat4x4(&m_pCamera->m_xmf4x4ViewProject));
+	xmv3LayMouse = XMVector3TransformCoord(xmv3LayMouse, xmmtxInversViewProject);
+}

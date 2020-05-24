@@ -12,9 +12,11 @@ void CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
 
-	BuildFrameBuffer(); 
+	BuildFrameBuffer();
 
-	BuildObjects(); 
+	BuildObjects();
+
+	
 
 	_tcscpy_s(m_pszFrameRate, _T("LabProject ("));
 }
@@ -33,12 +35,12 @@ void CGameFramework::BuildFrameBuffer()
 
 	HDC hDC = ::GetDC(m_hWnd);
 
-    m_hDCFrameBuffer = ::CreateCompatibleDC(hDC);
+	m_hDCFrameBuffer = ::CreateCompatibleDC(hDC);
 	m_hBitmapFrameBuffer = ::CreateCompatibleBitmap(hDC, m_rcClient.right - m_rcClient.left, m_rcClient.bottom - m_rcClient.top);
-    ::SelectObject(m_hDCFrameBuffer, m_hBitmapFrameBuffer);
+	::SelectObject(m_hDCFrameBuffer, m_hBitmapFrameBuffer);
 
 	::ReleaseDC(m_hWnd, hDC);
-    ::SetBkMode(m_hDCFrameBuffer, TRANSPARENT);
+	::SetBkMode(m_hDCFrameBuffer, TRANSPARENT);
 }
 
 void CGameFramework::ClearFrameBuffer(DWORD dwColor)
@@ -55,17 +57,17 @@ void CGameFramework::ClearFrameBuffer(DWORD dwColor)
 }
 
 void CGameFramework::PresentFrameBuffer()
-{    
-    HDC hDC = ::GetDC(m_hWnd);
-    ::BitBlt(hDC, m_rcClient.left, m_rcClient.top, m_rcClient.right - m_rcClient.left, m_rcClient.bottom - m_rcClient.top, m_hDCFrameBuffer, m_rcClient.left, m_rcClient.top, SRCCOPY);
-    ::ReleaseDC(m_hWnd, hDC);
+{
+	HDC hDC = ::GetDC(m_hWnd);
+	::BitBlt(hDC, m_rcClient.left, m_rcClient.top, m_rcClient.right - m_rcClient.left, m_rcClient.bottom - m_rcClient.top, m_hDCFrameBuffer, m_rcClient.left, m_rcClient.top, SRCCOPY);
+	::ReleaseDC(m_hWnd, hDC);
 }
 
 void CGameFramework::BuildObjects()
 {
 	CCamera* pCamera = new CCamera();
 	pCamera->SetViewport(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-	pCamera->GeneratePerspectiveProjectionMatrix(10.01f, 500.0f, 60.0f);
+	pCamera->GeneratePerspectiveProjectionMatrix(1.0f, 500.0f, 60.0f);
 	pCamera->GenerateFrustum();
 	pCamera->SetFOVAngle(60.0f);
 
@@ -111,7 +113,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	case WM_MOUSEMOVE:
 		break;
 	default:
-		if(m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	}
 }
@@ -147,6 +149,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_SIZE:
 		break;
 	case WM_LBUTTONDOWN:
+
 	case WM_RBUTTONDOWN:
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
@@ -188,22 +191,28 @@ void CGameFramework::ProcessInput()
 		때 마우스를 캡쳐하였다. 그러므로 마우스가 캡쳐된 윈도우가 현재 윈도우이면 마우스 버튼이 현재 윈도
 		우의 클라이언트 영역에서 눌려진 상태를 의미한다. 마우스 버튼이 눌려진 상태에서 마우스를 좌우 또는
 		상하로 움직이면 플레이어를 x-축 또는 y-축으로 회전한다.*/
-	
+
 		//마우스 커서를 화면에서 없앤다(보이지 않게 한다). 
 		::SetCursor(NULL);
 		POINT ptCursorPos;
 		//현재 마우스 커서의 위치를 가져온다.
 		::GetCursorPos(&ptCursorPos);
+		RECT rc;
+		::GetWindowRect(m_hWnd, &rc);
 		//마우스 버튼이 눌린 상태에서 마우스가 움직인 양을 구한다.
 		float cxMouseDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-		float cyMouseDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f; 
+		float cyMouseDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
 		//마우스 커서의 위치를 마우스가 눌려졌던 위치로 설정한다. 
 		::SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+		if (pKeyBuffer[VK_RBUTTON] & 0xF0)
+			if (m_pScene->isClickObject(ptCursorPos.x - rc.left-8, ptCursorPos.y - rc.left -33)) {
+				
+			}
 		if (cxMouseDelta || cyMouseDelta)
 		{
-		//마우스 이동이 있으면 플레이어를 회전한다.
-		/*cxDelta는 y-축의 회전을 나타내고 cyDelta는 x-축의 회전을 나타낸다. 오른쪽 마우스 버튼이 눌려진
-		경우 cxDelta는 z-축의 회전을 나타낸다.*/
+			//마우스 이동이 있으면 플레이어를 회전한다.
+			/*cxDelta는 y-축의 회전을 나타내고 cyDelta는 x-축의 회전을 나타낸다. 오른쪽 마우스 버튼이 눌려진
+			경우 cxDelta는 z-축의 회전을 나타낸다.*/
 			if (pKeyBuffer[VK_RBUTTON] & 0xF0)
 				m_pPlayer->Rotate(cyMouseDelta, 0.0f, -cxMouseDelta);
 			else
