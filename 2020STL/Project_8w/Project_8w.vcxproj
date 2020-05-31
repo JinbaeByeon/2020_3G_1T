@@ -127,9 +127,10 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,13 +140,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Dog.h" />
     <ClInclude Include="save.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="5월11일 강의.cpp" />
-    <ClCompile Include="Dog.cpp" />
+    <ClCompile Include="5월12일 강의.cpp" />
+    <ClCompile Include="8_2 MapSet.cpp" />
     <ClCompile Include="save.cpp" />
     <ClCompile Include="String.cpp" />
   </ItemGroup>
