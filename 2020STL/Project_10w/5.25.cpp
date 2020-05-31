@@ -69,13 +69,4 @@ int main()
 		this_thread::sleep_for(1000ms);
 	}*/
 
-	// 정수 1000만개 중에서 임의의 정수 10만개를 찾아보는데 걸리는 시간을 재본다.
-	// 정수 천만개 생성
-	//default_random_engine dre;
-	//normal_distribution<int> ndInt{ 0,1 };		// -5 ~ 5
-	// 벡터
-	// 셋
-	// 언오더드 셋
-
-	// 각 컨테이너에서 찾고자하는 정수 10만개를 찾는 시간을 재서 출력
 }
