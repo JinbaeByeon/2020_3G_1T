@@ -206,6 +206,7 @@ void CGameFramework::ProcessInput()
 		POINT ptCursorPos;
 		//현재 마우스 커서의 위치를 가져온다.
 		::GetCursorPos(&ptCursorPos);
+		
 		RECT rc;
 		::GetWindowRect(m_hWnd, &rc);
 		//마우스 버튼이 눌린 상태에서 마우스가 움직인 양을 구한다.
