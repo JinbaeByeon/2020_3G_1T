@@ -132,6 +132,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		switch (wParam)
 		{
 		case VK_LCONTROL:
+			// È£Ãâ ¾ÈµÊ
 			m_pPlayer->Shot();
 			break;
 		case VK_ESCAPE:
@@ -139,9 +140,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_RETURN:
 			break;
-		//default:
-		//	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-		//	break;
+		default:
+			if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+			break;
 		}
 		break;
 	default:
