@@ -135,11 +135,12 @@ void ShowRanking(const vector<Player>& vBreakOut, const vector<Player>& vChampio
 	size_t idx = p - vBreakOut.begin();
 	cout << fixed << setprecision(1);
 	
+	
 	if (idx != 0) {
 		cout << '\t' << setw(4) << vBreakOut.at(idx - 1).GetID() << setw(6) << idx << "등 상위" <<
 			setw(5) << (float)(idx) * 100 / NUM_PLAYER << "% 점수 " << vBreakOut.at(idx - 1).GetBreakOut() << endl;
 	}
-	cout << "떼탈출 " << setw(5) << id << setw(6) << idx + 1 << "등 상위" << 
+	cout << "떼탈출 " << setw(6) << id << setw(6) << idx + 1 << "등 상위" << 
 		setw(5) << (float)(idx+1) * 100 / NUM_PLAYER << "% 점수 " << vBreakOut.at(idx).GetBreakOut() << endl;
 	if (idx != NUM_PLAYER - 1) {
 		cout << '\t' << setw(4) << vBreakOut.at(idx + 1).GetID() << setw(6) << idx + 2 << "등 상위" <<
