@@ -44,6 +44,8 @@ public:
 
 void ShowRanking(const vector<Player>& vBreakOut, const vector<Player>& vChampions,const string& id);
 
+void StartSeason(vector<Player>& vPlayer);
+
 enum MENU{
 	종료,
 	시즌시작,
@@ -95,7 +97,10 @@ int main()
 		cin >> menu;
 		switch (menu) {
 		case 시즌시작:
-
+			StartSeason(vPlayer);
+			vChampionsLeague = vPlayer;
+			sort(vPlayer.begin(), vPlayer.end(), [](const Player& a, const Player& b) {
+				});
 			break;
 		case 플레이어검색:
 			cout << "Player ID: ";
@@ -160,4 +165,22 @@ void ShowRanking(const vector<Player>& vBreakOut, const vector<Player>& vChampio
 			setw(5) << (float)(idx + 2) * 100 / NUM_PLAYER << "% 점수 " << vChampions.at(idx + 1).GetChampionsLeague() << endl;
 	}
 	cout << endl;
+}
+
+void StartSeason(vector<Player>& vPlayer)
+{
+	float n;
+	for (int i = 0; i < NUM_PLAYER; ++i) {
+		if (i < NUM_PLAYER / 2) {
+			n = (clamp(nd(dre), -5.f, 5.f) + 5.f) * 290'588'702.6f;
+			if (n > vPlayer[i].GetBreakOut())
+				vPlayer[i].SetBreakOut(n);
+		}
+		else {
+			n = (clamp(nd(dre), -5.f, 5.f) + 5.f) * 111'267'038.4f;
+			if (n > vPlayer[i].GetChampionsLeague())
+				vPlayer[i].SetChampionsLeague(n);
+		}
+	}
+		
 }
