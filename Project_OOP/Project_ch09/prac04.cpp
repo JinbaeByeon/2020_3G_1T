@@ -1,3 +1,4 @@
+// 추상클래스 LoopAdder를 상속받아 각각 while문과 do-while문으로 calculate()함수를 오버라이딩한 클래스 작성
 #include <iostream>
 using namespace std;
 
@@ -33,7 +34,7 @@ void LoopAdder::run() {
 }
 
 class WhileLoopAdder :public LoopAdder {
-	int calculate() {
+	int calculate() {	// while문을 이용하여 합을 구한다.
 		int sum = 0, num = getX();
 
 		while (num <= getY()) {
@@ -46,7 +47,7 @@ public:
 };
 
 class DoWhileLoopAdder :public LoopAdder {
-	int calculate() {
+	int calculate() {	// do-while문을 이용하여 합을 구한다.
 		int sum = 0, num = getX();
 
 		do {

@@ -1,3 +1,4 @@
+// 추상클래스 LoadAdder를 상속받아 caculate()함수에서 for문을 이용하는 클래스
 #include <iostream>
 using namespace std;
 
@@ -33,7 +34,7 @@ void LoopAdder::run() {
 }
 
 class ForLoopAdder :public LoopAdder {
-	int calculate() {
+	int calculate() {	// for문을 이용하여 합을 구한다.
 		int sum = 0;
 		for (int i = getX(); i <= getY(); ++i) {
 			sum += i;
@@ -42,8 +43,6 @@ class ForLoopAdder :public LoopAdder {
 	}
 public:
 	ForLoopAdder(string name) :LoopAdder(name) {}
-
-
 };
 
 int main()

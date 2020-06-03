@@ -1,6 +1,8 @@
+// 추상클래스 Shape를 상속받는 Oval, Rect, Triangular 클래스 작성
 #include <iostream>
 using namespace std;
 
+// 추상 클래스 Shape
 class Shape {
 protected:
 	string name; // 도형의 이름
@@ -11,28 +13,31 @@ public:
 	string getName() { return name; } // 이름 리턴
 };
 
+// Shape을 상속
 class Oval :public Shape {
 public:
 	Oval(string n, int w, int h) :Shape(n, w, h) {}
 	double getArea() {
-		return 3.14 * width * height;
+		return 3.14 * width * height;	// 타원의 넓이 = 긴 반지름 * 짧은 반지름 * 3.14(파이)
 	}
 };
 
+// Shape을 상속
 class Rect :public Shape {
 public:
 	Rect(string n, int w, int h) :Shape(n, w, h) {}
 	double getArea() {
-		return (double)width * height;
+		return (double)width * height;	// 사각형의 넓이 = 가로 * 세로
 	}
 
 };
 
+// Shape을 상속
 class Triangular :public Shape {
 public:
 	Triangular(string n, int w, int h) :Shape(n, w, h) {}
 	double getArea() {
-		return (double)width * height / 2;
+		return (double)width * height / 2;	// 삼각형의 넓이 = 가로 * 세로 / 2
 	}
 
 };

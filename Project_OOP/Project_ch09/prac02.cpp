@@ -1,12 +1,13 @@
+// Converter 클래스를 상속받아 km를 mile로 변환하는 KmToMile 클래스
 #include <iostream>
 using namespace std;
 
 class Converter {
 protected:
 	double ratio;
-	virtual double convert(double src) = 0;
-	virtual string getSourceString() = 0;
-	virtual string getDestString() = 0;
+	virtual double convert(double src) = 0; // src를 다른 단위로 변환한다.
+	virtual string getSourceString() = 0; // 소스 단위 명칭
+	virtual string getDestString() = 0; // dest 단위 명칭
 public:
 	Converter(double ratio) { this->ratio = ratio; }
 	void run() {
@@ -20,7 +21,7 @@ public:
 
 class KmToMile :public Converter {
 	double convert(double src) {
-		return src / ratio;
+		return src / ratio;	// src km = src/ratio(1.609344) mile
 	}
 	string getSourceString() {
 		return "Km";
