@@ -20,6 +20,7 @@ class Player {
 	string id = "";
 	unsigned int breakout = 0;
 	unsigned int championsLeague = 0;
+
 	unsigned int seasonBO = 0;	// BreakOut의 최고점을 얻은 시즌
 	unsigned int seasonCL = 0;	// ChampioonsLeague의 최고점을 얻은 시즌
 public:
@@ -31,7 +32,7 @@ public:
 	unsigned int GetChampionsLeague() const { return championsLeague; }
 	void SetBreakOut(unsigned int score) { breakout = score; }
 	void SetChampionsLeague(unsigned int score) { championsLeague = score; }
-	
+
 	int GetSeasonBO() const {
 		return seasonBO;
 	}
@@ -49,17 +50,18 @@ public:
 		id = rhs.id;
 		breakout = rhs.breakout;
 		championsLeague = rhs.championsLeague;
+		seasonBO = rhs.seasonBO;
+		seasonCL = rhs.seasonCL;
 		return *this;
 	}
 	bool operator==(const Player& rhs) const {
 		return id == rhs.id;
 	}
-
 };
 
 void ShowRanking(const vector<Player>& vPlayer, const vector<Player>& vBreakOut, const vector<Player>& vChampions, const string& id);
 
-void StartSeason(vector<Player>& vPlayer,int season);
+void StartSeason(vector<Player>& vPlayer,const int season);
 
 enum MENU {
 	종료,
@@ -101,30 +103,18 @@ int main()
 	}
 	
 	vector<Player> vChampionsLeague = vPlayer, vBreakOut = vPlayer;
-	
-	
-	sort(vBreakOut.begin(), vBreakOut.end(), [](const Player& a,const Player& b) {
-		return a.GetSeasonBO() < b.GetSeasonBO();
-		});
-	int cnt = 0;
-	for (const auto& a : vBreakOut) {
-		cout << setw(3) << ++cnt << "등 - ID: " << setw(6) << a.GetID() << " 점수: " << a.GetBreakOut() << " 시즌: " << a.GetSeasonBO() << endl;
-		if (cnt == 100) break;
-	}
+
 	sort(vBreakOut.begin(), vBreakOut.end(), [](const Player& a, const  Player& b) {
-		return a.GetSeasonBO() < b.GetSeasonBO();
+		if (a.GetBreakOut() == b.GetBreakOut())
+			return a.GetSeasonBO() < b.GetSeasonBO();
+		return a.GetBreakOut() > b.GetBreakOut();
 		});
-	//sort(vBreakOut.begin(), vBreakOut.end(), [](const Player& a, const  Player& b) {
-	//	return a.GetBreakOut() > b.GetBreakOut();
-	//	});
 
 	sort(vChampionsLeague.begin(), vChampionsLeague.end(), [](const Player& a, const Player& b) {
-		return a.GetSeasonCL() < b.GetSeasonCL();
+		if (a.GetChampionsLeague() == b.GetChampionsLeague())
+			return a.GetSeasonCL() < b.GetSeasonCL();
+		return a.GetChampionsLeague() > b.GetChampionsLeague();
 		});
-	//sort(vChampionsLeague.begin(), vChampionsLeague.end(), [](const Player& a, const Player& b) {
-	//	return a.GetChampionsLeague() > b.GetChampionsLeague();
-	//	});
-
 
 	while (menu != 종료) {
 		cout << "0: 종료, 1: 시즌시작, 2: 플레이어 검색, 3: 떼탈출 랭킹100, 4: 챔피언스리그 랭킹100" << endl;
@@ -132,19 +122,18 @@ int main()
 		cin >> menu;
 		switch (menu) {
 		case 시즌시작:
-			StartSeason(vPlayer,season);
-				vBreakOut = vChampionsLeague = vPlayer;
-			sort(vBreakOut.begin(),vBreakOut.end(), [](const Player& a, const  Player& b) {
-				return a.GetSeasonBO() > b.GetSeasonBO();
-				});
+			StartSeason(vPlayer, season);
+			vBreakOut = vChampionsLeague = vPlayer;
+
 			sort(vBreakOut.begin(), vBreakOut.end(), [](const Player& a, const  Player& b) {
+				if (a.GetBreakOut() == b.GetBreakOut())
+					return a.GetSeasonBO() < b.GetSeasonBO();
 				return a.GetBreakOut() > b.GetBreakOut();
 				});
-			
+
 			sort(vChampionsLeague.begin(), vChampionsLeague.end(), [](const Player& a, const Player& b) {
-				return a.GetSeasonCL() > b.GetSeasonCL();
-				});
-			sort(vChampionsLeague.begin(), vChampionsLeague.end(), [](const Player& a, const Player& b) {
+				if (a.GetChampionsLeague() == b.GetChampionsLeague())
+					return a.GetSeasonCL() < b.GetSeasonCL();
 				return a.GetChampionsLeague() > b.GetChampionsLeague();
 				});
 
@@ -162,7 +151,7 @@ int main()
 				if (cnt == 100) break;
 			}
 		}
-					  break;
+			break;
 		case 챔피언스리그_랭킹100: {
 			int cnt = 0;
 			for (const auto& a : vChampionsLeague) {
@@ -263,7 +252,7 @@ void ShowRanking(const vector<Player>& vPlayer, const vector<Player>& vBreakOut,
 	}
 }
 
-void StartSeason(vector<Player>& vPlayer,int season)
+void StartSeason(vector<Player>& vPlayer,const int season)
 {
 	double n;
 	unique_ptr<bool[]> isPlay{ new bool[NUM_PLAYER] {false,} };
@@ -285,6 +274,7 @@ void StartSeason(vector<Player>& vPlayer,int season)
 
 	cnt = 0;
 	isPlay.reset(new bool[NUM_PLAYER] {false, });
+	// 임의의 5만명이 ChampionsLeague 플레이
 	while (cnt < NUM_PLAYER / 2) {
 		idx = uidRandomPlayer(dre);
 		if (!isPlay[idx]) {
@@ -297,5 +287,4 @@ void StartSeason(vector<Player>& vPlayer,int season)
 			++cnt;
 		}
 	}
-
 }
