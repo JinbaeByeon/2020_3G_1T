@@ -161,7 +161,7 @@ void ShowRanking(const vector<Player>& vPlayer, const vector<Player>& vBreakOut,
 
 		// 소수점 첫 번째 자리까지 출력
 		cout << fixed << setprecision(1);
-
+		
 		// BreakOut 출력
 		if (idx != 0) {
 			cout << '\t' << setw(5) <<
