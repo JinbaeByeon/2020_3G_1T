@@ -33,8 +33,6 @@ inline bool IsZero(float fValue) { return((fabsf(fValue) <= EPSILON)); }
 inline bool IsEqual(float fA, float fB) { return(::IsZero(fA - fB)); }
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
-#include <Mmsystem.h> 
-#pragma comment(lib, "winmm.lib")
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
